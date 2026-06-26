@@ -6,6 +6,7 @@ import {
   setHoldings,
   applyInvestment,
   fetchPricesAndFx,
+  tickersOf,
 } from "@/lib/holdings";
 import { applyStatuses } from "@/lib/framework";
 import { getSignalStatuses, kvGet, kvSet } from "@/lib/kv";
@@ -66,8 +67,8 @@ export async function POST(req: Request) {
       result.recommendation.map((l) => [l.position, l.gbp])
     ) as Record<string, number>;
 
-    const { prices, fxGbpUsd } = await fetchPricesAndFx();
     const holdings = await getHoldings();
+    const { prices, fxGbpUsd } = await fetchPricesAndFx(tickersOf(holdings));
     const updated = applyInvestment(holdings, allocationGBP, prices, fxGbpUsd);
     await setHoldings(updated);
 
