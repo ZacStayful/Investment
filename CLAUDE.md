@@ -51,8 +51,8 @@ injects these into every AI system prompt.
   portfolio tracker, AI intelligence query. `framework.json`, `/api/marketcap`,
   `/api/intelligence`, `/api/signals`.
 - **Phase 2 (in progress):**
-  - **Daily self-learning monitor** — `lib/monitor.ts` + `/api/cron/daily-monitor`
-    (Vercel Cron, 07:00 UTC, `CRON_SECRET`-guarded) + `/api/monitor` (pending
+  - **Self-learning monitor** — `lib/monitor.ts` + `/api/cron/monitor`
+    (Vercel Cron, MONTHLY 1st 07:00 UTC, `CRON_SECRET`-guarded) + `/api/monitor` (pending
     proposals, audit trail, accept/reject, manual run). Writes a knowledge
     time-series to KV; proposes status changes for human review (never mutates a
     status silently); Tier 3 / definitive movements flag as alerts (optional
@@ -75,7 +75,7 @@ injects these into every AI system prompt.
 - **Phase 3 (in progress):** Thesis-break / exit-discipline engine — the mirror
   of the allocator (reasons toward reduction/exit). `breakTriggers` in
   framework.json (18 conditions, defined in calm conditions); `lib/thesisBreak.ts`
-  + `/api/thesis-break` (also runs in the daily cron); `ExitDisciplinePanel`
+  + `/api/thesis-break` (also runs in the monthly cron); `ExitDisciplinePanel`
   (thesis health, active break conditions with evidence both ways, pre-commitment
   ledger, decision log, Tesla+SpaceX concentration meter). Hard rules: fires on
   THESIS deterioration, never price alone; never auto-sells; never resolves

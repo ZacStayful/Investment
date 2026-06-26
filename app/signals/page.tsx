@@ -67,8 +67,8 @@ export default function SignalsPage() {
       </Section>
 
       <Section
-        title="Daily Monitor"
-        subtitle="self-learning · proposes signal changes for your review — nothing changes silently"
+        title="Monitor"
+        subtitle="self-learning · runs monthly (or on demand) · proposes signal changes for your review — nothing changes silently"
       >
         <MonitorPanel />
       </Section>

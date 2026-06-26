@@ -6,7 +6,10 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 300;
 
 /**
- * Daily self-learning monitor. Configured in vercel.json to run at 07:00 UTC.
+ * Scheduled self-learning monitor. Configured in vercel.json to run MONTHLY
+ * (1st of each month, 07:00 UTC) — long-horizon signals move on a quarterly/
+ * monthly cadence, so daily scanning is unnecessary noise and cost. Can still be
+ * run on demand via the "Run monitor now" button (/api/monitor).
  *
  * Vercel Cron sends `Authorization: Bearer <CRON_SECRET>`. We require it in
  * production when CRON_SECRET is set; if it is unset (local dev) the route is

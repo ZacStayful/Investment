@@ -85,7 +85,7 @@ export default function MonitorPanel() {
         <span className="text-terminal-muted">
           {data.lastRun
             ? `Last run ${new Date(data.lastRun.ranAt).toLocaleString()} · ${data.lastRun.proposalsCreated} proposed · ${data.lastRun.alerts} alert(s)`
-            : "Not yet run · scheduled daily 07:00 UTC"}
+            : "Not yet run · scheduled monthly (1st, 07:00 UTC)"}
         </span>
         {data.lastRun?.errors && data.lastRun.errors.length > 0 && (
           <span className="text-status-concern">{data.lastRun.errors.length} error(s)</span>

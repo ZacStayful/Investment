@@ -89,7 +89,7 @@ export default function ExitDisciplinePanel() {
           {running ? "Assessing…" : "Run thesis-break check"}
         </button>
         <span className="text-terminal-muted">
-          {a ? `Last run ${new Date(a.ranAt).toLocaleString()}` : "Not yet run · also runs in the daily cron"}
+          {a ? `Last run ${new Date(a.ranAt).toLocaleString()}` : "Not yet run · also runs in the monthly cron"}
         </span>
         {a && <ConcentrationMeter c={a.concentration} />}
       </div>
