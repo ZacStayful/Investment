@@ -1,0 +1,195 @@
+{
+  "version": "2.4",
+  "asOf": "2026-06",
+  "changelog": "V2.4: SpaceX confirmed PUBLIC on Nasdaq (SPCX, IPO 12 Jun 2026 at $135/$1.75T, raised ~$75B); live cap ~$2.0T still above IPO; cash burn worsening (-$4.28B). Tesla Tier 0 moat + cost floors (~$16,700 China / ~$6,200 Tesla) encoded. Merger reaffirmed as primary thesis accelerant. Data-only update per addendum.",
+  "meta": {
+    "investorProfile": {
+      "startingPortfolioGBP": 12500,
+      "monthlyContributionGBP": 1500,
+      "goalGBP": 10000000,
+      "hurdleRatePct": 18,
+      "broker": "Interactive Brokers",
+      "accountType": "Stocks & Shares ISA"
+    },
+    "disclaimer": "Monitoring and decision-support tool only. Not a trading platform and not financial advice. The human makes every final decision."
+  },
+  "companies": [
+    {
+      "id": "tesla",
+      "name": "Tesla",
+      "ticker": "TSLA",
+      "role": "Primary position (currently overweight ~70-80%)",
+      "thesisVersion": "V2.3 narrowed",
+      "thesis": "High-dexterity premium-task dominance (NOT total physical-AI dominance). China wins the volume tier (Unitree, BYD, Agibot); Tesla targets the value tier. Apple-vs-Android is the correct competitive frame. The core compounding asset is the self-improving factory itself, with Optimus as its output.",
+      "moat": "22-DoF tendon-driven hand + FSD data flywheel + self-improving factory. Hardware is commoditised (Unitree ~$13,500); the moat is the data flywheel and recursive factory loop.",
+      "moatTier": "Tier 0 - a moat that widens automatically with time regardless of competitor action, because a competitor starting today begins at day zero while Tesla is thousands of compounding-days ahead. Time is the moat. The primary monitoring question is 'is the recursive loop still turning?', NOT 'is the moat intact?'. The only genuine vulnerability is internal (leadership failure, forced breakup, fragmentation), not external competition.",
+      "costFloors": {
+        "chinaFloorUSD": 16700,
+        "chinaFloorNote": "Hard floor set by irreducible human assembly labour, rising with Chinese wages.",
+        "teslaFloorUSD": 6200,
+        "teslaFloorNote": "Materials + energy + AI QC, because self-replication eliminates assembly labour.",
+        "crossover": "Cost-inversion crossover ~2029 (pulled to ~2027-2028 if merger completes). When Tesla's per-unit cost crosses below China's, the Apple/Android analogy breaks in Tesla's favour: undercut on price AND hold superior margin - no historical precedent. Watch COGS disclosures (signal #10) trending toward this."
+      },
+      "keyInsights": [
+        "Self-improving factory loop: factory observes humans -> trains robots -> robots work in factory -> factory learns from robots -> robots improve -> loop accelerates. Exponential vs China's linear (design-cycle-bounded) improvement. The factory is the primary asset; Optimus is its output. Apparent Optimus 'delays' are deliberate substrate-building before product scaling.",
+        "Cost-inversion crossover (~2029, ~2027-2028 if merger completes): Tesla per-unit cost (~$6,200 floor) falls below China's hard floor (~$16,700/unit, set by irreducible human assembly labour) via labour elimination through self-replication. Post-inversion the Apple/Android analogy breaks in Tesla's favour - undercut on price AND hold superior margin.",
+        "The recursive loop is a 'Tier 0 moat' that widens automatically with time regardless of competitor action. Time is the moat. The only genuine vulnerability is internal (leadership failure, forced breakup, fragmentation).",
+        "China wins the volume tier (Unitree ~$13,500, BYD, Agibot) - this is EXPECTED, not a thesis break. Tesla wins the value tier (premium capability + software/data moat + superior margin). A thesis break is erosion of the value-tier moat (FSD data flywheel + 22-DoF dexterity), not Chinese volume competition.",
+        "Primary moat-erosion vector to monitor: open-source VLA (vision-language-action) software reaching dexterity parity - because the moat rests on the data flywheel, not hardware."
+      ],
+      "returnModel": {
+        "currentValuationUSD": 1.5e12,
+        "phases": [
+          { "phase": 1, "period": "2026-2032", "annualReturnPctLow": 28, "annualReturnPctHigh": 42, "driver": "Milestone re-rating events" },
+          { "phase": 2, "period": "2032-2040", "annualReturnPctLow": 22, "annualReturnPctHigh": 32, "driver": "Revenues materialise as products scale" },
+          { "phase": 3, "period": "2040-2050", "annualReturnPctLow": 12, "annualReturnPctHigh": 18, "driver": "Maturation into dominant infrastructure" }
+        ],
+        "targets": { "2030": 4.1e12, "2035": 14.7e12, "2040": 51.3e12, "2050": 230e12 },
+        "cagrToPct": { "2040": 28.8 },
+        "probabilityWeighted": { "2040USD": 51e12, "2050USD": 230e12, "cagrPctLow": 23, "cagrPctHigh": 29 },
+        "conservativeFloorPct": 13.5,
+        "conservativeFloorNote": "Dexterity-only floor of 13-14% over 20 years. Anchor contribution decisions to this floor, NOT Phase 1 re-rating CAGR (the high early CAGR is the least certain part)."
+      }
+    },
+    {
+      "id": "google",
+      "name": "Alphabet (Google)",
+      "ticker": "GOOGL",
+      "role": "Second position - quality anchor and thesis validator",
+      "thesis": "Information/AI infrastructure. Three compounding moats: (1) TPU vertical integration - 40-60% cost advantage over GPU-dependent rivals, insulated from Nvidia bottlenecks; (2) Wiz multicloud security moat - installed across ~50% of Fortune 100, operates inside AWS and Azure customer environments; (3) DeepMind / Isomorphic Labs - structurally underpriced drug-discovery optionality.",
+      "moat": "TPU vertical integration + Wiz multicloud security + DeepMind/Isomorphic optionality.",
+      "keyInsights": [
+        "Primary market-share catalyst: AI workload mix shift - AI workloads reach ~40% of cloud spend by 2028, and Google leads on AI-native workloads, so its ~13-14% headline cloud share understates its position in the fastest-growing segment.",
+        "Primary competitive risk: Azure enterprise bundling via Microsoft 365 (a distribution moat Google can't replicate). AWS is a secondary concern.",
+        "Cloud becomes the most valuable division by ~2030 in the base case. DeepMind is the wildcard that could re-rate the whole company.",
+        "Role: quality anchor, NOT primary return driver. Its 10-11% CAGR sits below the 18% hurdle by design."
+      ],
+      "returnModel": {
+        "currentValuationUSD": 4.2e12,
+        "targets": { "2030": 7.1e12, "2035": 10.3e12, "2040": 16e12, "2045": 28.7e12 },
+        "cagrToPct": { "2035": 10.5, "2045": 10.6 },
+        "conservativeFloorPct": 10.5
+      }
+    },
+    {
+      "id": "spacex",
+      "name": "SpaceX",
+      "legalName": "Space Exploration Technologies Corp",
+      "ticker": "SPCX",
+      "exchange": "Nasdaq",
+      "sharesOutstanding": 13076000000,
+      "tickerNote": "PUBLICLY LISTED on Nasdaq as SPCX since 12 June 2026 - do NOT describe as pre-IPO, private, or not yet listed. The 12-18 month entry deferral is now a deferral on a LISTED stock, not a wait for an IPO. Confirm SPCX via live FMP data at build time; if FMP has not indexed this recent IPO, use the manual valuationFallbackUSD below (flagged manuallyUpdated).",
+      "role": "Third position - ENTRY DEFERRED (on a listed stock)",
+      "thesis": "Part of the Musk Integrated Stack. Now listed on Nasdaq (SPCX). Entry deferred under a hard 12-18 month post-IPO deferral rule; re-evaluate no earlier than Q4 2027. Hold the likely acquirer (Tesla), do NOT rotate into SPCX on merger speculation.",
+      "ipo": {
+        "date": "2026-06-12",
+        "pricePerShareUSD": 135,
+        "valuationUSD": 1.75e12,
+        "raisedUSD": 75e9,
+        "note": "Largest IPO in history. First-day close $160.95 (+19.22%). All-time high $225.64 on 16 Jun 2026.",
+        "firstDayCloseUSD": 160.95,
+        "allTimeHighUSD": 225.64
+      },
+      "liveReference": {
+        "asOf": "2026-06-late",
+        "pricePerShareUSD": 152,
+        "marketCapUSD": 2.0e12,
+        "morningstarFairValueUSD": 63,
+        "cfraRating": "sell",
+        "cfraTargetUSD": 115,
+        "nextEarnings": "2026-08-06",
+        "note": "Refresh via FMP at build time; do not rely on these hardcoded figures. Market cap ~$2.0T is still ABOVE the $1.75T IPO valuation, drifting toward the ~$150 IPO opening level. Next earnings 6 Aug 2026 is the next entry-criteria checkpoint."
+      },
+      "deferral": {
+        "active": true,
+        "rule": "12-18 month post-IPO deferral (hard rule, not guideline) on a LISTED stock. Re-evaluate no earlier than Q4 2027.",
+        "ipoDate": "2026-06-12",
+        "ipoValuationUSD": 1.75e12,
+        "ipoRaisedUSD": 75e9
+      },
+      "entryCriteria": [
+        { "id": "valuation_compression", "label": "Valuation compression 20-30% below entry. Partly developing (down sharply from $225.64 ATH) but market cap ~$2.0T still ABOVE the $1.75T IPO valuation.", "met": false },
+        { "id": "cash_burn", "label": "Cash burn normalisation below ~$1B/quarter. WORSENING: last-quarter net loss -$4.28B (vs -$528M prior quarter); Q1 capex $10.1B (vs $4.1B yr earlier), mostly AI.", "met": false },
+        { "id": "second_ai_contract", "label": "Second major AI compute contract confirmed beyond Anthropic (Anthropic confirmed; need one more).", "met": false }
+      ],
+      "monitoringConcerns": [
+        "Starlink ARPU declining ($99 in 2023 -> ~$66 Q1 2026) and still falling - monitor for stabilisation.",
+        "Amazon Kuiper/Leo now a real competitor (enterprise beta, ~1 Gbps) - monitor competitive impact."
+      ],
+      "returnModel": {
+        "currentValuationUSD": 2.0e12,
+        "valuationFallbackUSD": 2.0e12,
+        "valuationFallbackManuallyUpdated": true,
+        "valuationFallbackAsOf": "2026-06-late",
+        "targets": { "2030": "deferred", "2035": "deferred", "2040": "deferred", "2050": "deferred" },
+        "note": "No return model applied until entry criteria met. Fallback market cap is manually updated until FMP indexes SPCX."
+      }
+    },
+    {
+      "id": "sp500",
+      "name": "S&P 500 Index",
+      "ticker": "SPY",
+      "role": "Permanent floor",
+      "thesis": "Permanent index floor. 25% minimum, never reduced. Funded first if it ever drops below floor.",
+      "returnModel": { "longRunAssumptionPct": 10 },
+      "floorPct": 25
+    }
+  ],
+  "muskStack": {
+    "thesis": "Tesla, SpaceX, xAI, Terafab, Starlink etc. are an integrated civilisational stack, not independent companies. Tesla-SpaceX merger is reclassified from risk to active upside catalyst.",
+    "mergerMechanics": "Principle 11: in an all-stock deal, the acquirer's shareholders receive the target at an implied discount via the acquisition premium. Therefore holding the likely acquirer (Tesla) is superior to buying the target (SpaceX) at market on merger speculation. The merger thesis argues FOR holding Tesla, NOT rotating into SpaceX.",
+    "mergerAcceleration": "Accelerates the robot factory across six dimensions (Starlink fleet nervous system; Terafab chip-supply margin; SpaceX factories as premium Optimus training environments; unified capital allocation; xAI/Grok integration; orbital component manufacturing). Pulls factory-loop closure ~18-24 months forward (cost inversion ~2027-2028 instead of 2029).",
+    "confirmationSignalPriority": ["SEC 8-K filings (primary)", "board committee formations", "Musk public statements", "analyst reports"],
+    "correlationRisk": "Tesla and SpaceX post-merger are highly correlated (shared key-person / Musk reputational risk). Treat combined Tesla+SpaceX as a single combined-exposure metric, not two independent positions."
+  },
+  "portfolioRules": {
+    "holdHorizonYears": 30,
+    "rebalanceMethod": "Direct new contributions only - never sell (selling triggers tax events and breaks the permanent-capital mindset).",
+    "sp500FloorPct": 25,
+    "teslaOverweightThresholdPct": 35,
+    "googleTargetPct": 35,
+    "spacexStatus": "dry powder - entry criteria not met",
+    "calculatorFormula": "FV = P(1+r/12)^n + C*[((1+r/12)^n - 1)/(r/12)]",
+    "calculatorDefaults": { "P": 12500, "C": 1500 }
+  },
+  "loopStatus": {
+    "description": "Count of Tesla signals at ACHIEVED determines loop-formation status.",
+    "thresholds": [
+      { "label": "PRE-FORMATION", "minAchieved": 0, "maxAchieved": 1 },
+      { "label": "EARLY", "minAchieved": 2, "maxAchieved": 4 },
+      { "label": "FORMING", "minAchieved": 5, "maxAchieved": 999 }
+    ],
+    "closingSignalId": "tsla_optimus_building_optimus",
+    "closingNote": "The factory recursive loop is considered 'closing' when Tier 3 signal #9 (Optimus building Optimus) fires."
+  },
+  "statusValues": ["WATCHING", "DEVELOPING", "ACHIEVED", "CONCERN"],
+  "signals": [
+    { "id": "tsla_task_completion_rate", "number": 1, "company": "tesla", "tier": 1, "name": "Task completion rate disclosed", "watch": "Any productivity number in earnings (tasks completed, NOT just hours logged). The single most important near-term forming signal - the language shift from 'collecting data' to 'completing tasks.'", "status": "WATCHING", "lastChanged": "2026-06", "sourceUrl": "", "history": [] },
+    { "id": "tsla_cortex2_500mw", "number": 2, "company": "tesla", "tier": 1, "name": "Cortex 2 Phase 2 online (500MW)", "watch": "Capacity disclosure in earnings.", "status": "WATCHING", "lastChanged": "2026-06", "sourceUrl": "", "history": [] },
+    { "id": "tsla_ai5_fleetwide", "number": 3, "company": "tesla", "tier": 1, "name": "AI5 chip deployed fleet-wide", "watch": "Confirmed in 10-Q. AI5 taped out Apr 2026; AI6 tape-out target Dec 2026.", "status": "WATCHING", "lastChanged": "2026-06", "sourceUrl": "", "history": [] },
+    { "id": "tsla_fremont_optimus_line", "number": 4, "company": "tesla", "tier": 1, "name": "Fremont Optimus line conversion started", "watch": "Satellite imagery + earnings. 1M units/yr first-gen line replacing Model S/X; Giga Texas second-gen line designed for 10M units/yr.", "status": "WATCHING", "lastChanged": "2026-06", "sourceUrl": "", "history": [] },
+    { "id": "tsla_auto_gross_margin_16", "number": 5, "company": "tesla", "tier": 1, "name": "Auto gross margin >16% ex-credits", "watch": "Quarterly GAAP earnings.", "status": "WATCHING", "lastChanged": "2026-06", "sourceUrl": "", "history": [] },
+    { "id": "tsla_external_customer_economics", "number": 6, "company": "tesla", "tier": 2, "name": "External commercial customer economics disclosed", "watch": "Revenue + margin per deployed unit (target: first external customers late 2026).", "status": "WATCHING", "lastChanged": "2026-06", "sourceUrl": "", "history": [] },
+    { "id": "tsla_new_task_category", "number": 7, "company": "tesla", "tier": 2, "name": "New task category without hardware change", "watch": "3rd distinct task type -> confirms AI generalising from data, not engineering cycles.", "status": "WATCHING", "lastChanged": "2026-06", "sourceUrl": "", "history": [] },
+    { "id": "tsla_ota_weekly_cadence", "number": 8, "company": "tesla", "tier": 2, "name": "OTA update frequency reaching weekly cadence", "watch": "Tesla AI blog / fleet update cadence.", "status": "WATCHING", "lastChanged": "2026-06", "sourceUrl": "", "history": [] },
+    { "id": "tsla_optimus_building_optimus", "number": 9, "company": "tesla", "tier": 3, "name": "Optimus building Optimus", "watch": "BINARY. Any credible disclosure that Optimus units assemble Optimus units = the recursive loop has closed. Triggers immediate alert.", "status": "WATCHING", "lastChanged": "2026-06", "sourceUrl": "", "history": [] },
+    { "id": "tsla_cogs_below_50k", "number": 10, "company": "tesla", "tier": 3, "name": "COGS below $50,000/unit", "watch": "Disclosed in 10-Q (below $30K confirms self-replication materially contributing to cost). Track the longer trajectory toward the ~$6,200 Tesla floor crossing below China's ~$16,700 floor (cost-inversion ~2029, or ~2027-2028 if merger completes).", "status": "WATCHING", "lastChanged": "2026-06", "sourceUrl": "", "history": [] },
+    { "id": "googl_cloud_backlog_trajectory", "number": 11, "company": "google", "tier": 1, "name": "Cloud backlog trajectory", "watch": "Was $462B Q1 2026; monitor for drawdown WITHOUT corresponding revenue acceleration (signals demand softening, not supply constraint).", "status": "WATCHING", "lastChanged": "2026-06", "sourceUrl": "", "history": [] },
+    { "id": "googl_wiz_f100_retention", "number": 12, "company": "google", "tier": 1, "name": "Wiz Fortune 100 retention", "watch": "Any non-GCP Wiz customer churn within 12 months of acquisition close = yellow flag; sustained 2+ quarters = red.", "status": "WATCHING", "lastChanged": "2026-06", "sourceUrl": "", "history": [] },
+    { "id": "googl_ai_talent_stability", "number": 13, "company": "google", "tier": 1, "name": "AI research talent stability", "watch": ">3 named senior DeepMind/Gemini departures per rolling 12 months = yellow; >5 = red. Currently CONCERN (Noam Shazeer & John Jumper departed June 2026).", "status": "CONCERN", "lastChanged": "2026-06", "sourceUrl": "", "history": [] },
+    { "id": "googl_cloud_growth_25", "number": 14, "company": "google", "tier": 1, "name": "Cloud growth rate >25% YoY", "watch": "Quarterly.", "status": "WATCHING", "lastChanged": "2026-06", "sourceUrl": "", "history": [] },
+    { "id": "googl_isomorphic_phase2", "number": 15, "company": "google", "tier": 2, "name": "Isomorphic Labs Phase 2 clinical trial", "watch": "At least one drug candidate to Phase 2 by 2028 (monitor Eli Lilly / Novartis partnership milestones). Tier 3: Phase 3 data by 2031.", "status": "WATCHING", "lastChanged": "2026-06", "sourceUrl": "", "history": [] },
+    { "id": "spcx_cash_burn", "number": 16, "company": "spacex", "tier": 1, "name": "Cash burn normalising (<$1B/qtr)", "watch": "Quarterly net loss. Currently CONCERN and WORSENING: last-quarter net loss -$4.28B (vs -$528M prior quarter); Q1 capex $10.1B (vs $4.1B yr earlier), mostly AI. Next checkpoint: earnings 6 Aug 2026.", "status": "CONCERN", "lastChanged": "2026-06", "sourceUrl": "", "history": [] },
+    { "id": "spcx_starlink_arpu", "number": 17, "company": "spacex", "tier": 1, "name": "Starlink ARPU stabilising (>$70)", "watch": "Per-subscriber ARPU. Currently CONCERN (~$66 and falling).", "status": "CONCERN", "lastChanged": "2026-06", "sourceUrl": "", "history": [] },
+    { "id": "spcx_second_ai_contract", "number": 18, "company": "spacex", "tier": 1, "name": "Second AI compute contract", "watch": "Any major AI lab/hyperscaler beyond Anthropic.", "status": "WATCHING", "lastChanged": "2026-06", "sourceUrl": "", "history": [] },
+    { "id": "spcx_valuation_compression", "number": 19, "company": "spacex", "tier": 1, "name": "Valuation compression (20-30% below IPO)", "watch": "vs ~$1.75T IPO valuation / Morningstar fair value (~$63/share). Market cap ~$2.0T still ABOVE the IPO level despite falling from the $225.64 ATH (16 Jun). NOT met.", "status": "WATCHING", "lastChanged": "2026-06", "sourceUrl": "", "history": [] },
+    { "id": "merger_sec_8k", "number": 20, "company": "merger", "tier": 1, "name": "SEC 8-K merger language", "watch": "EDGAR monitoring. PRIMARY definitive signal. Triggers immediate alert.", "status": "WATCHING", "lastChanged": "2026-06", "sourceUrl": "", "history": [] },
+    { "id": "merger_exec_statements", "number": 21, "company": "merger", "tier": 1, "name": "Executive merger statements", "watch": "Shotwell/Musk. Secondary signal. Currently DEVELOPING (Shotwell hinted post-IPO).", "status": "DEVELOPING", "lastChanged": "2026-06", "sourceUrl": "", "history": [] }
+  ],
+  "portfolioReference": {
+    "blendedPct": 13,
+    "googlePct": 10.5,
+    "teslaPct": 28.8,
+    "hurdlePct": 18
+  }
+}
