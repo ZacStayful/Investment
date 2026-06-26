@@ -4,13 +4,25 @@ import { useEffect, useState } from "react";
 import { formatGBP, formatPct } from "@/lib/format";
 import { notifyHoldingsChanged, onHoldingsChanged } from "@/lib/clientEvents";
 
+type Currency = "USD" | "GBP" | "GBp";
+const CURRENCIES: Currency[] = ["USD", "GBP", "GBp"];
+const CCY_SYMBOL: Record<Currency, string> = { USD: "$", GBP: "£", GBp: "p" };
+
+interface Holding {
+  ticker: string;
+  currency: Currency;
+  shares: number;
+  costBasisGBP: number;
+}
+
 interface PositionValue {
   position: string;
   name: string;
   ticker: string;
+  currency: Currency;
   shares: number;
   costBasisGBP: number;
-  priceUSD: number | null;
+  priceNative: number | null;
   priceSource: "fmp" | "framework-fallback" | "none";
   currentValueGBP: number | null;
   returnGBP: number | null;
@@ -18,7 +30,7 @@ interface PositionValue {
 }
 
 interface HoldingsData {
-  holdings: Record<string, { shares: number; costBasisGBP: number }>;
+  holdings: Record<string, Holding>;
   positions: PositionValue[];
   totals: { costBasisGBP: number; currentValueGBP: number; returnGBP: number; returnPct: number | null };
   fxGbpUsd: number | null;
@@ -29,9 +41,7 @@ const ORDER = ["tesla", "google", "spacex", "sp500"];
 
 export default function HoldingsPanel() {
   const [data, setData] = useState<HoldingsData | null>(null);
-  const [edit, setEdit] = useState<Record<string, { shares: number; costBasisGBP: number }> | null>(
-    null
-  );
+  const [edit, setEdit] = useState<Record<string, Holding> | null>(null);
   const [saving, setSaving] = useState(false);
   const [justUpdated, setJustUpdated] = useState(false);
 
@@ -111,6 +121,7 @@ export default function HoldingsPanel() {
           <thead>
             <tr className="text-left text-terminal-muted">
               <th className="py-1 pr-2 font-medium">Position</th>
+              <th className="py-1 px-2 font-medium">Ticker / ccy</th>
               <th className="py-1 px-2 font-medium">Shares</th>
               <th className="py-1 px-2 font-medium">Invested (£)</th>
               <th className="py-1 px-2 font-medium">Price</th>
@@ -121,12 +132,39 @@ export default function HoldingsPanel() {
           <tbody>
             {ORDER.map((key) => {
               const pos = posByKey[key];
-              const h = edit[key] ?? { shares: 0, costBasisGBP: 0 };
+              const h = edit[key];
+              if (!h) return null;
               return (
                 <tr key={key} className="border-t border-terminal-border">
                   <td className="py-2 pr-2">
                     <div className="font-semibold text-terminal-text">{pos.name}</div>
-                    <div className="text-[10px] text-terminal-muted">{pos.ticker}</div>
+                  </td>
+                  <td className="py-2 px-2">
+                    <div className="flex items-center gap-1">
+                      <input
+                        type="text"
+                        value={h.ticker}
+                        onChange={(e) =>
+                          setEdit({ ...edit, [key]: { ...h, ticker: e.target.value.toUpperCase() } })
+                        }
+                        className="w-20 rounded border border-terminal-border bg-terminal-bg px-2 py-1 text-terminal-text"
+                        aria-label={`${pos.name} ticker`}
+                      />
+                      <select
+                        value={h.currency}
+                        onChange={(e) =>
+                          setEdit({ ...edit, [key]: { ...h, currency: e.target.value as Currency } })
+                        }
+                        className="rounded border border-terminal-border bg-terminal-bg px-1 py-1 text-terminal-text"
+                        aria-label={`${pos.name} currency`}
+                      >
+                        {CURRENCIES.map((c) => (
+                          <option key={c} value={c}>
+                            {c}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                   </td>
                   <td className="py-2 px-2">
                     <input
@@ -158,9 +196,10 @@ export default function HoldingsPanel() {
                     />
                   </td>
                   <td className="py-2 px-2 text-terminal-muted">
-                    {pos.priceUSD != null ? (
+                    {pos.priceNative != null ? (
                       <span title={pos.priceSource}>
-                        ${pos.priceUSD.toFixed(2)}
+                        {CCY_SYMBOL[pos.currency]}
+                        {pos.priceNative.toFixed(2)}
                         {pos.priceSource === "framework-fallback" && (
                           <span className="text-status-developing"> *</span>
                         )}
@@ -198,16 +237,18 @@ export default function HoldingsPanel() {
         </button>
         <span className="text-[11px] text-terminal-muted">
           {data.fxGbpUsd
-            ? `GBP/USD ${data.fxGbpUsd.toFixed(4)} · live value = shares × USD price ÷ FX`
+            ? `GBP/USD ${data.fxGbpUsd.toFixed(4)} · value converts USD÷FX, GBP as-is, GBp÷100`
             : data.keyConfigured
-            ? "FX unavailable — values fall back to amount invested"
+            ? "Price feed unavailable — values fall back to amount invested"
             : "No price feed (set FMP_API_KEY) — values fall back to amount invested"}
           {". * = framework fallback price (SpaceX)."}
         </span>
       </div>
       <p className="mt-2 text-[11px] text-terminal-muted">
-        Enter shares owned and total invested per position; returns update from live prices. These
-        live values feed the allocation advisor&apos;s current weights.
+        Set the <strong>ticker + currency</strong> for each position to match what you actually hold
+        (e.g. a UK-listed S&amp;P 500 fund like <code>VUAG.L</code> in GBP, not SPY in USD), then your
+        shares and amount invested. Returns update from live prices; these live values feed the
+        allocation advisor&apos;s current weights.
       </p>
     </div>
   );
