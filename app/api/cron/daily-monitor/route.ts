@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { runMonitor } from "@/lib/monitor";
+import { runThesisBreak } from "@/lib/thesisBreak";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
@@ -22,6 +23,15 @@ export async function GET(req: Request) {
   if (!authorized(req)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  const summary = await runMonitor();
-  return NextResponse.json({ ok: true, summary });
+  // Run the signal monitor and the thesis-break engine together.
+  const [summary, thesis] = await Promise.all([runMonitor(), runThesisBreak()]);
+  return NextResponse.json({
+    ok: true,
+    summary,
+    thesis: {
+      ranAt: thesis.ranAt,
+      breaks: thesis.companies.filter((c) => c.health === "BREAK" || c.health === "PREPARE").length,
+      alerts: thesis.portfolioAlerts.length,
+    },
+  });
 }

@@ -167,6 +167,69 @@ export interface AllocationResult {
   disclaimer: string;
 }
 
+export interface BreakTrigger {
+  id: string;
+  company: string;
+  pillar: string;
+  condition: string;
+  severityRule: string;
+  maxSeverity: "yellow" | "red" | "broken";
+  precommittedResponse: string;
+  temporaryVsStructuralTest: string;
+  correlatedWith?: string[];
+}
+
+export type BreakSeverity = "yellow" | "red" | "broken";
+export type ThesisHealth = "OK" | "MONITOR" | "PREPARE" | "BREAK";
+
+export interface FiredTrigger {
+  triggerId: string;
+  company: string;
+  pillar: string;
+  severity: BreakSeverity;
+  evidenceFor: string; // evidence the break is STRUCTURAL
+  evidenceAgainst: string; // evidence it is TEMPORARY / thesis intact
+  sourceUrl: string;
+  precommittedResponse: string;
+  temporaryVsStructuralTest: string;
+  escalated: boolean; // escalated by concentration rule
+  correlatedFire?: boolean; // fired via correlation (e.g. key-person on SpaceX)
+}
+
+export interface CompanyThesisAssessment {
+  company: string;
+  name: string;
+  health: ThesisHealth;
+  firedCount: number;
+  yellowCount: number;
+  redCount: number;
+  brokenCount: number;
+  firedTriggers: FiredTrigger[];
+  redeploymentTarget: string | null;
+}
+
+export interface ThesisBreakResult {
+  ranAt: string;
+  companies: CompanyThesisAssessment[];
+  concentration: {
+    teslaSpacexPct: number;
+    thresholdPct: number;
+    escalating: boolean;
+  };
+  portfolioAlerts: string[];
+  errors: string[];
+}
+
+export interface ThesisDecision {
+  id: string;
+  at: string;
+  triggerId: string;
+  company: string;
+  decision: "follow" | "override";
+  reasoning: string;
+  by: "user";
+}
+
 export interface MarketCapCard {
   ticker: string;
   companyId: string;
