@@ -1,22 +1,15 @@
 import { NextResponse } from "next/server";
 import { framework } from "@/lib/framework";
+import { fetchQuotes } from "@/lib/fmp";
 import type { MarketCapCard } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-const FMP_BASE = "https://financialmodelingprep.com/api/v3";
-
 // Companies to surface as live cards. SpaceX ticker is unconfirmed at the data
 // layer (recently IPO'd June 2026) — we attempt the live quote but fall back to
 // the framework IPO valuation if FMP returns nothing.
 const CARD_COMPANIES = ["tesla", "google", "spacex"];
-
-interface FmpQuote {
-  symbol: string;
-  price: number;
-  marketCap: number;
-}
 
 function nextTarget(companyId: string, marketCapUSD: number | null) {
   const company = framework.companies.find((c) => c.id === companyId);
@@ -43,21 +36,6 @@ function impliedCagr(marketCapUSD: number | null, target: { year: string; valuat
   return (Math.pow(target.valuationUSD / marketCapUSD, 1 / years) - 1) * 100;
 }
 
-async function fetchQuotes(symbols: string[], apiKey: string): Promise<Record<string, FmpQuote>> {
-  if (!apiKey || symbols.length === 0) return {};
-  try {
-    const url = `${FMP_BASE}/quote/${symbols.join(",")}?apikey=${apiKey}`;
-    const res = await fetch(url, { next: { revalidate: 60 } });
-    if (!res.ok) return {};
-    const data = (await res.json()) as FmpQuote[];
-    const map: Record<string, FmpQuote> = {};
-    for (const q of data) map[q.symbol] = q;
-    return map;
-  } catch {
-    return {};
-  }
-}
-
 export async function GET() {
   const apiKey = process.env.FMP_API_KEY ?? "";
   const asOf = new Date().toISOString();
@@ -67,7 +45,7 @@ export async function GET() {
   ) as (typeof framework.companies)[number][];
 
   const symbols = companies.map((c) => c.ticker);
-  const quotes = await fetchQuotes(symbols, apiKey);
+  const { quotes, source: priceApi } = await fetchQuotes(symbols, apiKey);
 
   const cards: MarketCapCard[] = companies.map((c) => {
     const quote = quotes[c.ticker];
@@ -102,6 +80,7 @@ export async function GET() {
   return NextResponse.json({
     cards,
     keyConfigured: Boolean(apiKey),
+    priceApi,
     asOf,
   });
 }
