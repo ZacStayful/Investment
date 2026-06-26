@@ -25,12 +25,13 @@ export default function AllocationAdvisor() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  function loadBalances() {
     fetch("/api/allocate")
       .then((r) => r.json())
       .then((d) => setBalances(d.balances))
-      .catch(() => setBalances({ tesla: 9250, google: 2000, spacex: 0, sp500: 1250 }));
-  }, []);
+      .catch(() => setBalances({ tesla: 0, google: 0, spacex: 0, sp500: 0 }));
+  }
+  useEffect(loadBalances, []);
 
   async function calculate() {
     if (loading) return;
@@ -40,7 +41,7 @@ export default function AllocationAdvisor() {
       const res = await fetch("/api/allocate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount, tolerance, balances }),
+        body: JSON.stringify({ amount, tolerance }),
       });
       const d = await res.json();
       if (!res.ok) setError(d.error ?? "Allocation failed");
@@ -96,30 +97,26 @@ export default function AllocationAdvisor() {
           </div>
         </div>
 
-        {/* Editable current holdings */}
+        {/* Current holdings — live, sourced from the Holdings panel */}
         <div>
           <label className="mb-1 block text-xs text-terminal-muted">
-            Current holdings (£) — {formatGBP(currentTotal)} total
+            Current holdings (live value) — {formatGBP(currentTotal)} total
           </label>
           <div className="grid grid-cols-2 gap-2">
             {balances &&
               POSITIONS.map((p) => (
-                <div key={p} className="flex items-center gap-1 text-xs">
-                  <span className="w-14 text-terminal-muted">{LABELS[p]}</span>
-                  <input
-                    type="number"
-                    min={0}
-                    step={100}
-                    value={balances[p]}
-                    onChange={(e) =>
-                      setBalances({ ...balances, [p]: Math.max(0, Number(e.target.value) || 0) })
-                    }
-                    className="w-full rounded border border-terminal-border bg-terminal-bg px-2 py-1 text-right text-terminal-text"
-                    aria-label={`${LABELS[p]} holding`}
-                  />
+                <div
+                  key={p}
+                  className="flex items-center justify-between rounded border border-terminal-border bg-terminal-bg px-2 py-1 text-xs"
+                >
+                  <span className="text-terminal-muted">{LABELS[p]}</span>
+                  <span className="text-terminal-text">{formatGBP(balances[p])}</span>
                 </div>
               ))}
           </div>
+          <p className="mt-1 text-[10px] text-terminal-muted">
+            Valued from your holdings above. Edit shares/cost in the Holdings panel.
+          </p>
         </div>
       </div>
 
