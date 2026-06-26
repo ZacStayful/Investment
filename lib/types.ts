@@ -66,6 +66,72 @@ export interface Framework {
 /** Map of signalId -> current status, stored in KV. */
 export type SignalStatusMap = Record<string, SignalStatus>;
 
+export interface CompanyOutlook {
+  companyId: string;
+  name: string;
+  deferred: boolean;
+  floorPct: number | null;
+  highPct: number | null;
+  basePct: number | null;
+  adjustedPct: number | null;
+  likelihoodPct: number;
+  confidence: number; // -1..1
+  signalsConsidered: number;
+  positiveDrivers: string[];
+  negativeDrivers: string[];
+}
+
+export interface BlendedOutlook {
+  weights: Record<string, number>;
+  blendedReturnPct: number;
+  blendedLikelihoodPct: number;
+  companies: CompanyOutlook[];
+}
+
+export interface MonitorProposal {
+  id: string;
+  signalId: string;
+  signalName: string;
+  company: string;
+  tier: 1 | 2 | 3;
+  fromStatus: SignalStatus;
+  toStatus: SignalStatus;
+  confidence: number; // 0..1
+  reasoning: string;
+  sourceUrl: string;
+  createdAt: string;
+  alert: boolean; // Tier 3 / definitive re-rating trigger
+}
+
+export interface AuditEntry {
+  id: string;
+  at: string;
+  signalId: string;
+  signalName: string;
+  type: "proposed" | "accepted" | "rejected";
+  fromStatus?: SignalStatus;
+  toStatus?: SignalStatus;
+  reasoning?: string;
+  sourceUrl?: string;
+  by: "monitor" | "user";
+}
+
+export interface KnowledgeEntry {
+  at: string;
+  status: SignalStatus;
+  confidence: number;
+  note: string;
+  sourceUrl?: string;
+}
+
+export interface MonitorRunSummary {
+  ranAt: string;
+  companiesAnalysed: number;
+  proposalsCreated: number;
+  alerts: number;
+  errors: string[];
+}
+
 export interface MarketCapCard {
   ticker: string;
   companyId: string;

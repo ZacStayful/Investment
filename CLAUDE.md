@@ -33,13 +33,24 @@ This file is the short list of *rules that must never be broken*.
 
 ## Build phases
 
-- **Phase 1 (current):** market-cap cards, signal board + KV persistence,
+- **Phase 1 (done, deployed):** market-cap cards, signal board + KV persistence,
   portfolio tracker, AI intelligence query. `framework.json`, `/api/marketcap`,
   `/api/intelligence`, `/api/signals`.
-- **Phase 2 (do NOT start until Phase 1 is deployed and confirmed):** Vercel Cron
-  daily self-learning monitor (audit trail + alerts + knowledge base) and the
-  three-layer capital allocation advisor with Tesla/SpaceX combined-exposure
-  handling.
+- **Phase 2 (in progress):**
+  - **Daily self-learning monitor** — `lib/monitor.ts` + `/api/cron/daily-monitor`
+    (Vercel Cron, 07:00 UTC, `CRON_SECRET`-guarded) + `/api/monitor` (pending
+    proposals, audit trail, accept/reject, manual run). Writes a knowledge
+    time-series to KV; proposes status changes for human review (never mutates a
+    status silently); Tier 3 / definitive movements flag as alerts (optional
+    `SLACK_WEBHOOK_URL`).
+  - **Dynamic return & likelihood** — `lib/outlook.ts` derives an adjusted annual
+    return + probability-of-achieving per position from the live signal board
+    (transparent heuristic; Tier 3 weighted 4× Tier 1). Feeds the blended rate
+    into the tracker. Surfaced in `components/OutlookPanel.tsx`.
+  - **Adjustable contribution** — the portfolio tracker takes a variable monthly
+    contribution (slider + exact input) above/below the £1,500 baseline.
+  - **Still TODO:** the three-layer capital allocation advisor (`/api/allocate`)
+    with Tesla/SpaceX combined-exposure handling.
 
 ## Stack
 
