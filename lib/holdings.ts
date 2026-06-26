@@ -1,5 +1,6 @@
 import { kvGet, kvSet } from "./kv";
 import { framework } from "./framework";
+import { fetchQuotes, type FmpSource } from "./fmp";
 import type { PortfolioBalances } from "./types";
 
 /**
@@ -84,36 +85,24 @@ export async function setHoldings(h: HoldingsMap): Promise<void> {
   await kvSet(HOLDINGS_KEY, h);
 }
 
-const FMP_BASE = "https://financialmodelingprep.com/api/v3";
-
 interface PriceData {
   prices: Record<string, number>;
   fxGbpUsd: number | null;
+  source: FmpSource;
 }
 
 /** Fetch live per-share prices (USD) and the GBP/USD rate from FMP. */
 export async function fetchPricesAndFx(): Promise<PriceData> {
   const key = process.env.FMP_API_KEY ?? "";
-  if (!key) return { prices: {}, fxGbpUsd: null };
-  const symbols = Object.values(TICKERS).join(",");
-  const out: PriceData = { prices: {}, fxGbpUsd: null };
-  try {
-    const [quoteRes, fxRes] = await Promise.all([
-      fetch(`${FMP_BASE}/quote/${symbols}?apikey=${key}`, { next: { revalidate: 60 } }),
-      fetch(`${FMP_BASE}/quote/GBPUSD?apikey=${key}`, { next: { revalidate: 300 } }),
-    ]);
-    if (quoteRes.ok) {
-      const data = (await quoteRes.json()) as Array<{ symbol: string; price: number }>;
-      for (const q of data) if (typeof q.price === "number") out.prices[q.symbol] = q.price;
-    }
-    if (fxRes.ok) {
-      const fx = (await fxRes.json()) as Array<{ price: number }>;
-      if (fx[0]?.price) out.fxGbpUsd = fx[0].price;
-    }
-  } catch {
-    /* graceful — values stay null */
+  if (!key) return { prices: {}, fxGbpUsd: null, source: "none" };
+  const symbols = [...Object.values(TICKERS), "GBPUSD"];
+  const { quotes, source } = await fetchQuotes(symbols, key);
+  const prices: Record<string, number> = {};
+  for (const [sym, q] of Object.entries(quotes)) {
+    if (q.price != null) prices[sym] = q.price;
   }
-  return out;
+  const fxGbpUsd = prices["GBPUSD"] ?? null;
+  return { prices, fxGbpUsd, source };
 }
 
 function spacexFallbackPrice(): number | null {

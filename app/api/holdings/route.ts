@@ -27,9 +27,14 @@ function sanitize(input: unknown): HoldingsMap {
 }
 
 async function build(holdings: HoldingsMap) {
-  const { prices, fxGbpUsd } = await fetchPricesAndFx();
+  const { prices, fxGbpUsd, source } = await fetchPricesAndFx();
   const computed = computePositions(holdings, prices, fxGbpUsd);
-  return { holdings, ...computed, keyConfigured: Boolean(process.env.FMP_API_KEY) };
+  return {
+    holdings,
+    ...computed,
+    priceApi: source,
+    keyConfigured: Boolean(process.env.FMP_API_KEY),
+  };
 }
 
 export async function GET() {
