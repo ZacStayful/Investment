@@ -7,6 +7,8 @@ import MonitorPanel from "@/components/MonitorPanel";
 import AllocationAdvisor from "@/components/AllocationAdvisor";
 import HoldingsPanel from "@/components/HoldingsPanel";
 import ExitDisciplinePanel from "@/components/ExitDisciplinePanel";
+import PostureBanner from "@/components/PostureBanner";
+import ConvictionMeter from "@/components/ConvictionMeter";
 import { framework } from "@/lib/framework";
 
 export const metadata = {
@@ -54,6 +56,8 @@ export default function SignalsPage() {
         </div>
       </header>
 
+      <PostureBanner />
+
       {/* The signal board is the hero. */}
       <Section
         title="Signal Board"
@@ -78,6 +82,13 @@ export default function SignalsPage() {
         subtitle="your shares + cost per position · live value and return"
       >
         <HoldingsPanel />
+      </Section>
+
+      <Section
+        title="Conviction vs Floor"
+        subtitle="are the concentrated bets sized so being wrong is damaging, not just disappointing?"
+      >
+        <ConvictionMeter />
       </Section>
 
       <Section

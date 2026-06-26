@@ -56,11 +56,12 @@ export default function OutlookPanel() {
           conservative figure to anchor decisions to) →{" "}
           <span className="text-status-achieved">adjusted</span> (today&apos;s best estimate, where
           current signals place you in the band) →{" "}
-          <span className="text-terminal-text">target</span> (the framework&apos;s full-conviction
-          headline CAGR — e.g. Tesla 28.8%). The <em>adjusted</em> number is the one that moves with
-          the signal board; the <em>target</em> is the static ceiling you&apos;re aiming at. This is
-          a transparent heuristic, not a forecast — Tier 3 signals weighted 4× Tier 1. Blended uses
-          target weights (Tesla {Math.round((outlook.weights.tesla ?? 0) * 100)}% · Google{" "}
+          <span className="text-terminal-text">bull scenario</span> (the framework&apos;s
+          full-conviction headline CAGR — e.g. Tesla 28.8%). The <em>adjusted</em> number is the one
+          that moves with the signal board; the <em>bull</em> figure is a{" "}
+          <strong>contingent scenario, not a forecast</strong> — what would have to be true, not what
+          will happen. This is a transparent heuristic. Tier 3 signals weighted 4× Tier 1. Blended
+          uses target weights (Tesla {Math.round((outlook.weights.tesla ?? 0) * 100)}% · Google{" "}
           {Math.round((outlook.weights.google ?? 0) * 100)}% · S&amp;P 500{" "}
           {Math.round((outlook.weights.sp500 ?? 0) * 100)}%; SpaceX excluded while entry deferred).
         </p>
@@ -137,7 +138,7 @@ function CompanyRow({ c, weight }: { c: CompanyOutlook; weight: number }) {
           <div className="mt-1 flex justify-between text-[10px] text-terminal-muted">
             <span>floor {c.floorPct}%</span>
             <span className="text-status-achieved">adjusted {c.adjustedPct.toFixed(1)}%</span>
-            <span>target {c.highPct}%</span>
+            <span>bull {c.highPct}%</span>
           </div>
         </div>
       )}

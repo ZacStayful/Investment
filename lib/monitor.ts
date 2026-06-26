@@ -1,5 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { framework, applyStatuses, defaultStatusMap } from "./framework";
+import { framework, applyStatuses, defaultStatusMap, principlesPreamble } from "./framework";
 import { kvGet, kvSet, getSignalStatuses, setSignalStatuses } from "./kv";
 import type {
   Signal,
@@ -89,7 +89,8 @@ async function analyseCompany(
     model: MODEL,
     max_tokens: 1500,
     system:
-      "You output strictly valid JSON arrays for a monitoring pipeline. Ground claims in web_search results.",
+      principlesPreamble() +
+      "\n\nYou output strictly valid JSON arrays for a monitoring pipeline. Ground claims in web_search results. Judge by MILESTONE EVIDENCE, not price or narrative.",
     tools: [
       { type: "web_search_20250305", name: "web_search", max_uses: 4 } as unknown as Anthropic.Tool,
     ],

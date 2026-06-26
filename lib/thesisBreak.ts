@@ -1,5 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { framework, applyStatuses } from "./framework";
+import { framework, applyStatuses, principlesPreamble } from "./framework";
 import { computeCompanyOutlook } from "./outlook";
 import { kvGet, kvSet, getSignalStatuses } from "./kv";
 import { getCurrentBalances } from "./holdings";
@@ -117,7 +117,8 @@ async function assessCompany(
     model: MODEL,
     max_tokens: 1500,
     system:
-      "You output strictly valid JSON arrays for a thesis-break pipeline. Ground claims in web_search. Never conclude temporary-vs-structural; present both sides. Never treat price drops as breaks.",
+      principlesPreamble() +
+      "\n\nYou output strictly valid JSON arrays for a thesis-break pipeline. Ground claims in web_search. Never conclude temporary-vs-structural; present both sides. Never treat price drops as breaks — fire only on milestone/thesis deterioration.",
     tools: [
       { type: "web_search_20250305", name: "web_search", max_uses: 4 } as unknown as Anthropic.Tool,
     ],

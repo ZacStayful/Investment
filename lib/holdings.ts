@@ -166,6 +166,32 @@ export function computePositions(
 }
 
 /**
+ * Apply a confirmed capital allocation (£ per position) to holdings: the cost
+ * basis rises by the amount invested, and shares rise by the live-price
+ * equivalent (amount in USD / per-share USD price). Positions with no live
+ * price still record the cost (shares unchanged). Returns the updated holdings.
+ */
+export function applyInvestment(
+  holdings: HoldingsMap,
+  allocationGBP: Partial<Record<Position, number>>,
+  prices: Record<string, number>,
+  fxGbpUsd: number | null
+): HoldingsMap {
+  const next: HoldingsMap = JSON.parse(JSON.stringify(holdings));
+  for (const p of POSITIONS) {
+    const gbp = allocationGBP[p] ?? 0;
+    if (gbp <= 0) continue;
+    next[p].costBasisGBP += gbp;
+    let priceUSD: number | null = prices[TICKERS[p]] ?? null;
+    if (priceUSD == null && p === "spacex") priceUSD = spacexFallbackPrice();
+    if (priceUSD != null && priceUSD > 0 && fxGbpUsd) {
+      next[p].shares += (gbp * fxGbpUsd) / priceUSD;
+    }
+  }
+  return next;
+}
+
+/**
  * Current market value per position as GBP balances — the live source of truth
  * for the allocation advisor's "current holdings". Falls back to cost basis
  * when a price is unavailable.

@@ -23,12 +23,18 @@ export default function AllocationAdvisor() {
   const [balances, setBalances] = useState<PortfolioBalances | null>(null);
   const [result, setResult] = useState<AllocationResult | null>(null);
   const [loading, setLoading] = useState(false);
+  const [confirming, setConfirming] = useState(false);
+  const [confirmMsg, setConfirmMsg] = useState<string | null>(null);
+  const [contributions, setContributions] = useState<{ at: string; amount: number; tolerance: string }[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   function loadBalances() {
     fetch("/api/allocate")
       .then((r) => r.json())
-      .then((d) => setBalances(d.balances))
+      .then((d) => {
+        setBalances(d.balances);
+        setContributions(d.contributions ?? []);
+      })
       .catch(() => setBalances({ tesla: 0, google: 0, spacex: 0, sp500: 0 }));
   }
   useEffect(loadBalances, []);
@@ -37,6 +43,7 @@ export default function AllocationAdvisor() {
     if (loading) return;
     setLoading(true);
     setError(null);
+    setConfirmMsg(null);
     try {
       const res = await fetch("/api/allocate", {
         method: "POST",
@@ -50,6 +57,33 @@ export default function AllocationAdvisor() {
       setError("Network error");
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function confirm() {
+    if (confirming) return;
+    setConfirming(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/allocate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "confirm", amount, tolerance }),
+      });
+      const d = await res.json();
+      if (!res.ok) setError(d.error ?? "Confirm failed");
+      else {
+        setBalances(d.balances);
+        setResult(null);
+        setConfirmMsg(
+          `Recorded ${formatGBP(amount)} contribution — holdings updated. Enter your next amount for a revised allocation.`
+        );
+        loadBalances();
+      }
+    } catch {
+      setError("Network error");
+    } finally {
+      setConfirming(false);
     }
   }
 
@@ -134,7 +168,46 @@ export default function AllocationAdvisor() {
         </p>
       )}
 
+      {confirmMsg && (
+        <p className="mt-3 rounded-md border border-status-achieved/40 bg-status-achieved/10 p-3 text-sm text-status-achieved">
+          {confirmMsg}
+        </p>
+      )}
+
       {result && <Result result={result} />}
+
+      {result && (
+        <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-terminal-border pt-3">
+          <button
+            onClick={confirm}
+            disabled={confirming}
+            className="rounded-md bg-status-achieved/20 px-4 py-2 text-sm font-semibold text-status-achieved disabled:opacity-40"
+          >
+            {confirming ? "Recording…" : "Confirm & update holdings"}
+          </button>
+          <span className="text-[11px] text-terminal-muted">
+            Records this as a contribution and updates your holdings so the next allocation is
+            revised. Does not place any trade — you execute via your broker.
+          </span>
+        </div>
+      )}
+
+      {contributions.length > 0 && (
+        <div className="mt-4 border-t border-terminal-border pt-3">
+          <div className="mb-1 text-[11px] uppercase tracking-wide text-terminal-muted">
+            Recent contributions
+          </div>
+          <ul className="space-y-1">
+            {contributions.slice(0, 6).map((c, i) => (
+              <li key={i} className="flex items-center gap-2 text-[11px] text-terminal-muted">
+                <span>{new Date(c.at).toLocaleDateString()}</span>
+                <span className="text-terminal-text">{formatGBP(c.amount)}</span>
+                <span>· {c.tolerance}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }

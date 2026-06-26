@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
-import { framework } from "@/lib/framework";
+import { framework, principlesPreamble } from "@/lib/framework";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -17,7 +17,9 @@ function buildSystemPrompt(): string {
     .map((s) => `  - [#${s.number} ${s.id}] (${s.company}, tier ${s.tier}, status ${s.status}) ${s.name} — watch: ${s.watch}`)
     .join("\n");
 
-  return `You are the intelligence engine for a long-horizon (30+ year) investment monitoring dashboard. This is a MONITORING AND DECISION-SUPPORT tool, NOT financial advice. Never tell the user to buy or sell. The human makes every final decision.
+  return `${principlesPreamble()}
+
+You are the intelligence engine for a long-horizon (30+ year) investment monitoring dashboard. This is a MONITORING AND DECISION-SUPPORT tool, NOT financial advice. Never tell the user to buy or sell. The human makes every final decision. Anchor findings to MILESTONE EVIDENCE, not price or narrative; a rising price with slipping milestones is a WARNING, not a celebration. Treat every model figure as a contingent scenario, not a forecast.
 
 FRAMEWORK VERSION: ${framework.version} (as of ${framework.asOf}).
 

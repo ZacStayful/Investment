@@ -48,6 +48,30 @@ export function defaultStatusMap(): SignalStatusMap {
   return Object.fromEntries(framework.signals.map((s) => [s.id, s.status])) as SignalStatusMap;
 }
 
+interface GoverningPrinciples {
+  tagline: string;
+  principles: { n: number; title: string; text: string }[];
+  concentrationDamagingThresholdPct: number;
+  concentrationNote: string;
+}
+
+export function governingPrinciples(): GoverningPrinciples {
+  return (framework as unknown as { governingPrinciples: GoverningPrinciples }).governingPrinciples;
+}
+
+/** Compact principles preamble injected into every AI system prompt so generated
+ * content embodies the posture: discipline not prediction, milestones not price,
+ * downside weighted equally, calm tone. */
+export function principlesPreamble(): string {
+  const gp = governingPrinciples();
+  if (!gp) return "";
+  return (
+    "GOVERNING POSTURE (overrides any confident, thesis-forward language):\n" +
+    gp.principles.map((p) => `${p.n}. ${p.title}: ${p.text}`).join("\n") +
+    `\nKeep in view: ${gp.tagline}`
+  );
+}
+
 export const STATUS_CYCLE: SignalStatus[] = ["WATCHING", "DEVELOPING", "ACHIEVED", "CONCERN"];
 
 export function nextStatus(current: SignalStatus): SignalStatus {

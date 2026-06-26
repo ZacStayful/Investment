@@ -13,6 +13,19 @@
     },
     "disclaimer": "Monitoring and decision-support tool only. Not a trading platform and not financial advice. The human makes every final decision."
   },
+  "governingPrinciples": {
+    "tagline": "Structure for capturing higher returns IF they prove possible — not evidence that they are.",
+    "principles": [
+      { "n": 1, "title": "Discipline engine, not a prediction engine", "text": "Every target, market-cap model, CAGR and milestone is a CONTINGENT SCENARIO, not an expected outcome. Models define what would have to be true for a thesis to hold — checkpoints to measure reality against, never forecasts to trust. Lead with 'what would have to be true, and is it becoming true', never with a destination figure. Show bear/base/bull together; never the bull alone." },
+      { "n": 2, "title": "Milestone evidence governs every capital decision — never price, never narrative", "text": "Three capital responses: increase, slow, abandon — all driven by milestone evidence, not share price or narrative. Price falling while milestones hit -> hold/increase. Price rising while milestones slip -> WARNING, not celebration. Milestones slipping -> slow. Structurally broken -> abandon. Price is noise; milestones are the signal." },
+      { "n": 3, "title": "Weight the downside logic equally with the upside", "text": "The natural failure mode is becoming a conviction amplifier. The abandon/slow machinery (exit discipline) is surfaced with EQUAL prominence to the increase machinery. Deterioration signals sit equal to upside signals, never buried below them." },
+      { "n": 4, "title": "The concentrated positions carry the dream; the floor carries the future", "text": "The S&P 500 floor (never <25%) and the operating business (Stayful) are the reliable foundation. Tesla/Google/SpaceX are a high-conviction satellite that COULD deliver a transformational outcome but whose failure must not be survival-threatening. Make it easy to see whether the concentrated bets have grown to a size where being wrong would be DAMAGING rather than merely DISAPPOINTING — and flag it if so." },
+      { "n": 5, "title": "Founder-led companies are punished before vindication — examine, don't flee", "text": "A break signal is a prompt to examine whether the thesis is structurally broken or merely setback — never an automatic instruction to act. The temporary-vs-structural judgement is irreducibly human. Surface the pre-committed response and force the question; never auto-execute, never resolve the judgement for the user." },
+      { "n": 6, "title": "The user is a person, not a position", "text": "The dashboard serves someone with a life, a business and people around them — not a trading algorithm. Tone is steady and calm, especially during drawdowns. It does not foster compulsive checking, hype or anxiety. It matters most precisely when the future stops looking like the model." }
+    ],
+    "concentrationDamagingThresholdPct": 75,
+    "concentrationNote": "Concentrated = Tesla+Google+SpaceX. Floor = S&P 500. If concentrated exposure exceeds the damaging threshold, being wrong is damaging rather than disappointing — flag it. The index floor and operating business carry the floor; the conviction positions carry the dream that might not arrive."
+  },
   "companies": [
     {
       "id": "tesla",
