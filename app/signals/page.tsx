@@ -2,6 +2,8 @@ import MarketCapCards from "@/components/MarketCapCards";
 import SignalBoard from "@/components/SignalBoard";
 import PortfolioTracker from "@/components/PortfolioTracker";
 import IntelligenceQuery from "@/components/IntelligenceQuery";
+import OutlookPanel from "@/components/OutlookPanel";
+import MonitorPanel from "@/components/MonitorPanel";
 import { framework } from "@/lib/framework";
 
 export const metadata = {
@@ -57,11 +59,28 @@ export default function SignalsPage() {
         <SignalBoard />
       </Section>
 
+      <Section
+        title="Daily Monitor"
+        subtitle="self-learning · proposes signal changes for your review — nothing changes silently"
+      >
+        <MonitorPanel />
+      </Section>
+
       <Section title="Live Market Caps" subtitle="vs framework return-model targets">
         <MarketCapCards />
       </Section>
 
-      <Section title="Portfolio Tracker" subtitle="compounding projection — not a forecast">
+      <Section
+        title="Return Outlook"
+        subtitle="expected return & likelihood — recomputed live from the signal board"
+      >
+        <OutlookPanel />
+      </Section>
+
+      <Section
+        title="Portfolio Tracker"
+        subtitle="adjustable contribution & rate · compounding projection — not a forecast"
+      >
         <PortfolioTracker />
       </Section>
 

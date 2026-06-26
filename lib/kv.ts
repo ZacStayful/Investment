@@ -48,25 +48,34 @@ async function writeLocal(data: Record<string, unknown>): Promise<void> {
   await fs.writeFile(LOCAL_FILE, JSON.stringify(data, null, 2), "utf8");
 }
 
-export async function getSignalStatuses(): Promise<SignalStatusMap> {
+/** Generic KV get. Returns null when the key is absent. */
+export async function kvGet<T>(key: string): Promise<T | null> {
   if (useVercelKv()) {
     const { kv } = await import("@vercel/kv");
-    const stored = await kv.get<SignalStatusMap>(SIGNAL_STATUS_KEY);
-    return stored ?? {};
+    return (await kv.get<T>(key)) ?? null;
   }
   const local = await readLocal();
-  return (local[SIGNAL_STATUS_KEY] as SignalStatusMap) ?? {};
+  return (local[key] as T) ?? null;
 }
 
-export async function setSignalStatuses(map: SignalStatusMap): Promise<void> {
+/** Generic KV set. */
+export async function kvSet<T>(key: string, value: T): Promise<void> {
   if (useVercelKv()) {
     const { kv } = await import("@vercel/kv");
-    await kv.set(SIGNAL_STATUS_KEY, map);
+    await kv.set(key, value);
     return;
   }
   const local = await readLocal();
-  local[SIGNAL_STATUS_KEY] = map;
+  local[key] = value;
   await writeLocal(local);
+}
+
+export async function getSignalStatuses(): Promise<SignalStatusMap> {
+  return (await kvGet<SignalStatusMap>(SIGNAL_STATUS_KEY)) ?? {};
+}
+
+export async function setSignalStatuses(map: SignalStatusMap): Promise<void> {
+  await kvSet(SIGNAL_STATUS_KEY, map);
 }
 
 export const kvBackend = useVercelKv() ? "vercel-kv" : "local-json";
