@@ -7,6 +7,7 @@ import type {
   RiskTolerance,
 } from "@/lib/types";
 import { formatGBP } from "@/lib/format";
+import { notifyHoldingsChanged, onHoldingsChanged } from "@/lib/clientEvents";
 
 const TOLERANCES: RiskTolerance[] = ["Conservative", "Moderate", "Aggressive"];
 const POSITIONS: (keyof PortfolioBalances)[] = ["tesla", "google", "spacex", "sp500"];
@@ -37,7 +38,10 @@ export default function AllocationAdvisor() {
       })
       .catch(() => setBalances({ tesla: 0, google: 0, spacex: 0, sp500: 0 }));
   }
-  useEffect(loadBalances, []);
+  useEffect(() => {
+    loadBalances();
+    return onHoldingsChanged(loadBalances); // stay in sync when holdings change elsewhere
+  }, []);
 
   async function calculate() {
     if (loading) return;
@@ -78,6 +82,7 @@ export default function AllocationAdvisor() {
         setConfirmMsg(
           `Recorded ${formatGBP(amount)} contribution — holdings updated. Enter your next amount for a revised allocation.`
         );
+        notifyHoldingsChanged(); // holdings + conviction meter refresh
         loadBalances();
       }
     } catch {

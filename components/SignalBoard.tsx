@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import type { Signal, SignalStatus } from "@/lib/types";
+import { notifySignalsChanged } from "@/lib/clientEvents";
 
 const STATUS_STYLES: Record<SignalStatus, { dot: string; text: string; ring: string }> = {
   ACHIEVED: { dot: "bg-status-achieved", text: "text-status-achieved", ring: "border-status-achieved/40" },
@@ -54,6 +55,7 @@ export default function SignalBoard() {
       if (data.signals) {
         setSignals(data.signals);
         setLoop(data.loop ?? null);
+        notifySignalsChanged();
       }
     } finally {
       setPending(null);
