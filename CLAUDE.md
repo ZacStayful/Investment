@@ -58,6 +58,17 @@ This file is the short list of *rules that must never be broken*.
     optimisation (probability-weighted expected return from the outlook model).
     Reads/saves portfolio balances in KV. Executes the user's rules; not advice.
 
+- **Phase 3 (in progress):** Thesis-break / exit-discipline engine — the mirror
+  of the allocator (reasons toward reduction/exit). `breakTriggers` in
+  framework.json (18 conditions, defined in calm conditions); `lib/thesisBreak.ts`
+  + `/api/thesis-break` (also runs in the daily cron); `ExitDisciplinePanel`
+  (thesis health, active break conditions with evidence both ways, pre-commitment
+  ledger, decision log, Tesla+SpaceX concentration meter). Hard rules: fires on
+  THESIS deterioration, never price alone; never auto-sells; never resolves
+  temporary-vs-structural for the user; redeploys to the strongest survivor or
+  the S&P 500 floor, never cash; key-person (T-B6) is a combined Tesla+SpaceX
+  event; concentration >60% escalates red triggers one level.
+
 ## Stack
 
 Next.js 14 (App Router), TypeScript, Tailwind, Recharts. Anthropic model string:

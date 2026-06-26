@@ -6,6 +6,7 @@ import OutlookPanel from "@/components/OutlookPanel";
 import MonitorPanel from "@/components/MonitorPanel";
 import AllocationAdvisor from "@/components/AllocationAdvisor";
 import HoldingsPanel from "@/components/HoldingsPanel";
+import ExitDisciplinePanel from "@/components/ExitDisciplinePanel";
 import { framework } from "@/lib/framework";
 
 export const metadata = {
@@ -98,6 +99,13 @@ export default function SignalsPage() {
         subtitle="executes your framework rules on new capital — not advice; you decide"
       >
         <AllocationAdvisor />
+      </Section>
+
+      <Section
+        title="Exit Discipline"
+        subtitle="thesis-break monitor — fires on thesis deterioration, not price; the engine forces the question, you decide"
+      >
+        <ExitDisciplinePanel />
       </Section>
 
       <Section
