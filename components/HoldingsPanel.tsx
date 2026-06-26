@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { formatGBP, formatPct } from "@/lib/format";
-import { notifyHoldingsChanged } from "@/lib/clientEvents";
+import { notifyHoldingsChanged, onHoldingsChanged } from "@/lib/clientEvents";
 
 interface PositionValue {
   position: string;
@@ -33,15 +33,28 @@ export default function HoldingsPanel() {
     null
   );
   const [saving, setSaving] = useState(false);
+  const [justUpdated, setJustUpdated] = useState(false);
 
-  useEffect(() => {
+  function load(showFlash = false) {
     fetch("/api/holdings")
       .then((r) => r.json())
       .then((d: HoldingsData) => {
         setData(d);
+        // Refresh edit state too, so a later Save can't clobber an allocation
+        // that was confirmed elsewhere.
         setEdit(d.holdings);
+        if (showFlash) {
+          setJustUpdated(true);
+          setTimeout(() => setJustUpdated(false), 4000);
+        }
       })
       .catch(() => setData(null));
+  }
+
+  useEffect(() => {
+    load();
+    // Re-pull when an allocation is confirmed (or holdings change elsewhere).
+    return onHoldingsChanged(() => load(true));
   }, []);
 
   async function save() {
@@ -75,6 +88,12 @@ export default function HoldingsPanel() {
 
   return (
     <div className="rounded-lg border border-terminal-border bg-terminal-panel p-4">
+      {justUpdated && (
+        <p className="mb-3 rounded-md border border-status-achieved/40 bg-status-achieved/10 px-3 py-2 text-xs text-status-achieved">
+          Holdings updated from a confirmed allocation — shares and amount invested adjusted at the
+          current price.
+        </p>
+      )}
       {/* Totals */}
       <div className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
         <Stat label="Total value" value={formatGBP(t.currentValueGBP)} tone="text" />
