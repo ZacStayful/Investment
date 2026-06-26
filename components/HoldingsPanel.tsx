@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { formatGBP, formatPct } from "@/lib/format";
+import { notifyHoldingsChanged } from "@/lib/clientEvents";
 
 interface PositionValue {
   position: string;
@@ -55,6 +56,7 @@ export default function HoldingsPanel() {
       const d = await res.json();
       setData(d);
       setEdit(d.holdings);
+      notifyHoldingsChanged(); // conviction meter + allocator balances refresh
     } finally {
       setSaving(false);
     }

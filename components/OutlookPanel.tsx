@@ -3,18 +3,23 @@
 import { useEffect, useState } from "react";
 import type { Signal, BlendedOutlook, CompanyOutlook } from "@/lib/types";
 import { computeBlendedOutlook } from "@/lib/outlook";
+import { onSignalsChanged } from "@/lib/clientEvents";
 
 export default function OutlookPanel() {
   const [outlook, setOutlook] = useState<BlendedOutlook | null>(null);
 
   useEffect(() => {
-    fetch("/api/signals")
-      .then((r) => r.json())
-      .then((data) => {
-        const signals = (data.signals ?? []) as Signal[];
-        setOutlook(computeBlendedOutlook(signals));
-      })
-      .catch(() => setOutlook(null));
+    function load() {
+      fetch("/api/signals")
+        .then((r) => r.json())
+        .then((data) => {
+          const signals = (data.signals ?? []) as Signal[];
+          setOutlook(computeBlendedOutlook(signals));
+        })
+        .catch(() => setOutlook(null));
+    }
+    load();
+    return onSignalsChanged(load); // recompute return + likelihood live
   }, []);
 
   if (!outlook) {

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { MonitorProposal, AuditEntry, MonitorRunSummary } from "@/lib/types";
+import { notifySignalsChanged } from "@/lib/clientEvents";
 
 interface MonitorData {
   proposals: MonitorProposal[];
@@ -54,12 +55,14 @@ export default function MonitorPanel() {
     setBusyId(proposalId);
     try {
       const d = await post({ action, proposalId });
-      if (!d.error)
+      if (!d.error) {
         setData((prev) => ({
           proposals: d.proposals ?? [],
           audit: d.audit ?? [],
           lastRun: prev?.lastRun ?? null,
         }));
+        if (action === "accept") notifySignalsChanged(); // status changed → outlook/likelihood update
+      }
     } finally {
       setBusyId(null);
     }

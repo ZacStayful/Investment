@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { governingPrinciples } from "@/lib/framework";
 import { formatGBP } from "@/lib/format";
+import { onHoldingsChanged } from "@/lib/clientEvents";
 import type { PortfolioBalances } from "@/lib/types";
 
 /**
@@ -16,10 +17,14 @@ export default function ConvictionMeter() {
   const threshold = gp?.concentrationDamagingThresholdPct ?? 75;
 
   useEffect(() => {
-    fetch("/api/allocate")
-      .then((r) => r.json())
-      .then((d) => setBalances(d.balances))
-      .catch(() => setBalances(null));
+    function load() {
+      fetch("/api/allocate")
+        .then((r) => r.json())
+        .then((d) => setBalances(d.balances))
+        .catch(() => setBalances(null));
+    }
+    load();
+    return onHoldingsChanged(load);
   }, []);
 
   if (!balances) {
