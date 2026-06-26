@@ -4,6 +4,7 @@ import PortfolioTracker from "@/components/PortfolioTracker";
 import IntelligenceQuery from "@/components/IntelligenceQuery";
 import OutlookPanel from "@/components/OutlookPanel";
 import MonitorPanel from "@/components/MonitorPanel";
+import AllocationAdvisor from "@/components/AllocationAdvisor";
 import { framework } from "@/lib/framework";
 
 export const metadata = {
@@ -82,6 +83,13 @@ export default function SignalsPage() {
         subtitle="adjustable contribution & rate · compounding projection — not a forecast"
       >
         <PortfolioTracker />
+      </Section>
+
+      <Section
+        title="Capital Allocation Advisor"
+        subtitle="executes your framework rules on new capital — not advice; you decide"
+      >
+        <AllocationAdvisor />
       </Section>
 
       <Section

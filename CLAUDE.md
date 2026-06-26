@@ -49,8 +49,14 @@ This file is the short list of *rules that must never be broken*.
     into the tracker. Surfaced in `components/OutlookPanel.tsx`.
   - **Adjustable contribution** — the portfolio tracker takes a variable monthly
     contribution (slider + exact input) above/below the £1,500 baseline.
-  - **Still TODO:** the three-layer capital allocation advisor (`/api/allocate`)
-    with Tesla/SpaceX combined-exposure handling.
+  - **Capital allocation advisor** — `lib/allocate.ts` + `/api/allocate` +
+    `components/AllocationAdvisor.tsx`. Three layers: (1) framework hard
+    constraints (S&P floor funded first, Tesla £0 while overweight >35%, Google
+    priority while underweight, SpaceX dry powder, never sell); (2) volatility
+    adjustment (composite risk per position + Tesla/SpaceX combined exposure,
+    scaled by Conservative/Moderate/Aggressive tolerance); (3) return
+    optimisation (probability-weighted expected return from the outlook model).
+    Reads/saves portfolio balances in KV. Executes the user's rules; not advice.
 
 ## Stack
 

@@ -132,6 +132,41 @@ export interface MonitorRunSummary {
   errors: string[];
 }
 
+export type RiskTolerance = "Conservative" | "Moderate" | "Aggressive";
+
+export interface PortfolioBalances {
+  tesla: number;
+  google: number;
+  spacex: number;
+  sp500: number;
+}
+
+export interface AllocationLine {
+  position: string;
+  name: string;
+  gbp: number;
+  pctOfNew: number; // % of the new capital
+  reasons: string[];
+}
+
+export interface PortfolioSnapshot {
+  balances: PortfolioBalances;
+  total: number;
+  weights: Record<string, number>; // 0..1
+  teslaSpacexCombinedPct: number; // 0..100
+}
+
+export interface AllocationResult {
+  input: { amount: number; tolerance: RiskTolerance };
+  current: PortfolioSnapshot;
+  recommendation: AllocationLine[];
+  postInvestment: PortfolioSnapshot;
+  projections: { blendedReturnPct: number; blendedLikelihoodPct: number };
+  layers: { layer1: string[]; layer2: string[]; layer3: string[] };
+  alerts: string[];
+  disclaimer: string;
+}
+
 export interface MarketCapCard {
   ticker: string;
   companyId: string;
