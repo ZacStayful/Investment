@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import type { Signal, BlendedOutlook, CompanyOutlook } from "@/lib/types";
 import { computeBlendedOutlook } from "@/lib/outlook";
-import { formatPct } from "@/lib/format";
 
 export default function OutlookPanel() {
   const [outlook, setOutlook] = useState<BlendedOutlook | null>(null);
@@ -45,22 +44,27 @@ export default function OutlookPanel() {
       </div>
 
       <div className="space-y-2">
-        {outlook.companies
-          .filter((c) => c.companyId !== "spacex" || c.signalsConsidered > 0)
-          .map((c) => (
-            <CompanyRow key={c.companyId} c={c} weight={outlook.weights[c.companyId] ?? 0} />
-          ))}
+        {outlook.companies.map((c) => (
+          <CompanyRow key={c.companyId} c={c} weight={outlook.weights[c.companyId] ?? 0} />
+        ))}
       </div>
 
-      <p className="mt-4 text-[11px] leading-relaxed text-terminal-muted">
-        Heuristic, not a forecast. Expected return is interpolated inside each position&apos;s own
-        band (conservative floor → headline CAGR) from its live signals; likelihood flexes around a
-        neutral baseline with signal confidence. Tier 3 signals are weighted 4× Tier 1. Blended uses
-        target weights (Tesla {Math.round((outlook.weights.tesla ?? 0) * 100)}% · Google{" "}
-        {Math.round((outlook.weights.google ?? 0) * 100)}% · S&amp;P 500{" "}
-        {Math.round((outlook.weights.sp500 ?? 0) * 100)}%; SpaceX deferred). Updates live as signals
-        move.
-      </p>
+      <div className="mt-4 rounded-md border border-terminal-border bg-terminal-bg p-3 text-[11px] leading-relaxed text-terminal-muted">
+        <p className="mb-1 font-semibold text-terminal-text">Reading the three numbers</p>
+        <p>
+          Each position shows a band: <span className="text-status-watching">floor</span> (the
+          conservative figure to anchor decisions to) →{" "}
+          <span className="text-status-achieved">adjusted</span> (today&apos;s best estimate, where
+          current signals place you in the band) →{" "}
+          <span className="text-terminal-text">target</span> (the framework&apos;s full-conviction
+          headline CAGR — e.g. Tesla 28.8%). The <em>adjusted</em> number is the one that moves with
+          the signal board; the <em>target</em> is the static ceiling you&apos;re aiming at. This is
+          a transparent heuristic, not a forecast — Tier 3 signals weighted 4× Tier 1. Blended uses
+          target weights (Tesla {Math.round((outlook.weights.tesla ?? 0) * 100)}% · Google{" "}
+          {Math.round((outlook.weights.google ?? 0) * 100)}% · S&amp;P 500{" "}
+          {Math.round((outlook.weights.sp500 ?? 0) * 100)}%; SpaceX excluded while entry deferred).
+        </p>
+      </div>
     </div>
   );
 }
@@ -95,19 +99,48 @@ function CompanyRow({ c, weight }: { c: CompanyOutlook; weight: number }) {
           {weight > 0 && (
             <span className="text-[11px] text-terminal-muted">{Math.round(weight * 100)}% target</span>
           )}
-        </div>
-        <div className="text-right">
-          {c.deferred || c.adjustedPct == null ? (
-            <span className="text-xs font-semibold text-status-watching">
-              {c.deferred ? "ENTRY DEFERRED" : "n/a"}
-            </span>
-          ) : (
-            <span className="text-base font-bold text-status-achieved">
-              {c.adjustedPct.toFixed(1)}%
+          {c.deferred && (
+            <span className="rounded bg-status-watching/20 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-status-watching">
+              entry deferred
             </span>
           )}
         </div>
+        <div className="text-right">
+          {c.adjustedPct == null ? (
+            <span className="text-xs font-semibold text-status-watching">n/a</span>
+          ) : (
+            <div>
+              <span className="text-base font-bold text-status-achieved">
+                {c.adjustedPct.toFixed(1)}%
+              </span>
+              <span className="ml-1 text-[10px] text-terminal-muted">adjusted</span>
+            </div>
+          )}
+        </div>
       </div>
+
+      {/* floor -> adjusted -> target band */}
+      {c.adjustedPct != null && c.floorPct != null && c.highPct != null && (
+        <div className="mt-2">
+          <div className="relative h-1.5 overflow-hidden rounded-full bg-terminal-border">
+            <div
+              className="absolute top-0 h-full w-1.5 -translate-x-1/2 rounded-full bg-status-achieved"
+              style={{
+                left: `${
+                  c.highPct > c.floorPct
+                    ? ((c.adjustedPct - c.floorPct) / (c.highPct - c.floorPct)) * 100
+                    : 50
+                }%`,
+              }}
+            />
+          </div>
+          <div className="mt-1 flex justify-between text-[10px] text-terminal-muted">
+            <span>floor {c.floorPct}%</span>
+            <span className="text-status-achieved">adjusted {c.adjustedPct.toFixed(1)}%</span>
+            <span>target {c.highPct}%</span>
+          </div>
+        </div>
+      )}
 
       <div className="mt-2 flex items-center gap-2">
         <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-terminal-border">
@@ -116,8 +149,8 @@ function CompanyRow({ c, weight }: { c: CompanyOutlook; weight: number }) {
             style={{ width: `${c.likelihoodPct}%` }}
           />
         </div>
-        <span className="w-24 text-right text-[11px] text-terminal-muted">
-          {c.likelihoodPct}% likely
+        <span className="w-28 text-right text-[11px] text-terminal-muted">
+          {c.likelihoodPct}% likely{c.deferred ? " (if entered)" : ""}
         </span>
       </div>
 
@@ -139,11 +172,6 @@ function CompanyRow({ c, weight }: { c: CompanyOutlook; weight: number }) {
               −{d}
             </span>
           ))}
-        </div>
-      )}
-      {c.adjustedPct != null && c.floorPct != null && c.highPct != null && (
-        <div className="mt-1.5 text-[10px] text-terminal-muted">
-          band {c.floorPct}%–{c.highPct}% · confidence {formatPct(c.confidence * 100, 0)}
         </div>
       )}
     </div>

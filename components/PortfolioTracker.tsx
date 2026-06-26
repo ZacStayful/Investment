@@ -42,11 +42,15 @@ export default function PortfolioTracker() {
   const contributed = defaults.P + contribution * months;
   const gain = fv - contributed;
 
+  // Framework TARGET rates (band tops / reference) — distinct from the live
+  // signal-adjusted rate above. Tesla 28.8% is the full-conviction target,
+  // not today's estimate.
   const quickCards = [
-    { label: "Blended", pct: ref.blendedPct },
-    { label: "Google", pct: ref.googlePct },
-    { label: "Tesla", pct: ref.teslaPct },
-    { label: "Hurdle", pct: ref.hurdlePct },
+    { label: "Tesla target", pct: ref.teslaPct, note: "band top" },
+    { label: "Google target", pct: ref.googlePct, note: "anchor" },
+    { label: "SpaceX*", pct: 22, note: "deferred" },
+    { label: "Blended", pct: ref.blendedPct, note: "" },
+    { label: "Hurdle", pct: ref.hurdlePct, note: "benchmark" },
   ];
 
   return (
@@ -116,28 +120,39 @@ export default function PortfolioTracker() {
             )}
           </div>
 
-          <div className="grid grid-cols-2 gap-2 pt-1 sm:grid-cols-3">
+          <div className="pt-1">
             {adjusted && (
               <button
                 onClick={() => setRate(Math.round(adjusted.rate))}
-                className="col-span-2 rounded border border-status-achieved/40 bg-status-achieved/10 p-2 text-left text-xs transition-colors hover:border-status-achieved sm:col-span-3"
+                className="mb-2 w-full rounded border border-status-achieved/40 bg-status-achieved/10 p-2 text-left text-xs transition-colors hover:border-status-achieved"
               >
-                <div className="text-terminal-muted">Signal-adjusted rate · {adjusted.likelihood}% likely</div>
+                <div className="text-terminal-muted">
+                  Live signal-adjusted rate · {adjusted.likelihood}% likely
+                </div>
                 <div className="text-base font-semibold text-status-achieved">
                   {adjusted.rate.toFixed(1)}% — apply
                 </div>
               </button>
             )}
-            {quickCards.map((q) => (
-              <button
-                key={q.label}
-                onClick={() => setRate(Math.round(q.pct))}
-                className="rounded border border-terminal-border bg-terminal-bg p-2 text-left text-xs transition-colors hover:border-terminal-muted"
-              >
-                <div className="text-terminal-muted">{q.label}</div>
-                <div className="text-base font-semibold text-terminal-text">{q.pct}%</div>
-              </button>
-            ))}
+            <div className="mb-1 text-[10px] uppercase tracking-wide text-terminal-muted">
+              Framework target rates (band tops — not today&apos;s estimate)
+            </div>
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+              {quickCards.map((q) => (
+                <button
+                  key={q.label}
+                  onClick={() => setRate(Math.round(q.pct))}
+                  className="rounded border border-terminal-border bg-terminal-bg p-2 text-left text-xs transition-colors hover:border-terminal-muted"
+                >
+                  <div className="text-terminal-muted">{q.label}</div>
+                  <div className="text-base font-semibold text-terminal-text">{q.pct}%</div>
+                  {q.note && <div className="text-[9px] text-terminal-muted">{q.note}</div>}
+                </button>
+              ))}
+            </div>
+            <p className="mt-1 text-[10px] text-terminal-muted">
+              * SpaceX entry deferred — assumption, editable in framework.
+            </p>
           </div>
         </div>
 

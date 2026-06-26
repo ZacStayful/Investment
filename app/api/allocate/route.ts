@@ -1,31 +1,23 @@
 import { NextResponse } from "next/server";
-import { getBalances, setBalances, computeAllocation, DEFAULT_BALANCES } from "@/lib/allocate";
+import { computeAllocation } from "@/lib/allocate";
+import { getCurrentBalances } from "@/lib/holdings";
 import { applyStatuses } from "@/lib/framework";
 import { getSignalStatuses } from "@/lib/kv";
-import type { PortfolioBalances, RiskTolerance } from "@/lib/types";
+import type { RiskTolerance } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
 const TOLERANCES: RiskTolerance[] = ["Conservative", "Moderate", "Aggressive"];
 
-function sanitizeBalances(input: unknown): PortfolioBalances | null {
-  if (!input || typeof input !== "object") return null;
-  const b = input as Record<string, unknown>;
-  const out: PortfolioBalances = { ...DEFAULT_BALANCES };
-  for (const key of ["tesla", "google", "spacex", "sp500"] as const) {
-    const v = Number(b[key]);
-    out[key] = Number.isFinite(v) && v >= 0 ? v : 0;
-  }
-  return out;
-}
-
 export async function GET() {
-  const balances = await getBalances();
+  // Current holdings valued live (from the Holdings panel) are the source of
+  // truth for the allocator's starting balances.
+  const balances = await getCurrentBalances();
   return NextResponse.json({ balances });
 }
 
 export async function POST(req: Request) {
-  let body: { amount?: number; tolerance?: string; balances?: unknown };
+  let body: { amount?: number; tolerance?: string };
   try {
     body = await req.json();
   } catch {
@@ -45,14 +37,7 @@ export async function POST(req: Request) {
     );
   }
 
-  // Persist balances if the client sent updated holdings.
-  let balances = await getBalances();
-  const provided = sanitizeBalances(body.balances);
-  if (provided) {
-    balances = provided;
-    await setBalances(balances);
-  }
-
+  const balances = await getCurrentBalances();
   const signals = applyStatuses(await getSignalStatuses());
   const result = computeAllocation(amount, tolerance, balances, signals);
   return NextResponse.json(result);

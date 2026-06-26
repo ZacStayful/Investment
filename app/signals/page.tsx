@@ -5,6 +5,7 @@ import IntelligenceQuery from "@/components/IntelligenceQuery";
 import OutlookPanel from "@/components/OutlookPanel";
 import MonitorPanel from "@/components/MonitorPanel";
 import AllocationAdvisor from "@/components/AllocationAdvisor";
+import HoldingsPanel from "@/components/HoldingsPanel";
 import { framework } from "@/lib/framework";
 
 export const metadata = {
@@ -72,8 +73,15 @@ export default function SignalsPage() {
       </Section>
 
       <Section
+        title="Holdings & Returns"
+        subtitle="your shares + cost per position · live value and return"
+      >
+        <HoldingsPanel />
+      </Section>
+
+      <Section
         title="Return Outlook"
-        subtitle="expected return & likelihood — recomputed live from the signal board"
+        subtitle="floor → adjusted → target band · recomputed live from the signal board"
       >
         <OutlookPanel />
       </Section>

@@ -46,10 +46,9 @@ function companyBand(companyId: string): { floor: number | null; high: number | 
     const r = (rm.longRunAssumptionPct as number) ?? 10;
     return { floor: r, high: r };
   }
-  if (companyId === "spacex") {
-    return { floor: null, high: null }; // deferred — no return band applied
-  }
 
+  // SpaceX entry is still deferred, but a return band is surfaced for
+  // tracking/outlook (assumption, editable in framework.json).
   const floor = (rm.conservativeFloorPct as number) ?? null;
   const cagr = (rm.cagrToPct as Record<string, number>) ?? {};
   const high = Object.values(cagr).length ? Math.max(...Object.values(cagr)) : floor;

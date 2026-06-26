@@ -121,8 +121,13 @@
         "valuationFallbackUSD": 2.0e12,
         "valuationFallbackManuallyUpdated": true,
         "valuationFallbackAsOf": "2026-06-late",
+        "pricePerShareUSD": 152,
         "targets": { "2030": "deferred", "2035": "deferred", "2040": "deferred", "2050": "deferred" },
-        "note": "No return model applied until entry criteria met. Fallback market cap is manually updated until FMP indexes SPCX."
+        "conservativeFloorPct": 12,
+        "cagrToPct": { "estimate": 22 },
+        "shownDespiteDeferral": true,
+        "returnNote": "Entry remains DEFERRED (criteria unmet). The 12-22% band is shown for tracking/outlook only and is an editable assumption, not an entry recommendation.",
+        "note": "Entry deferral unchanged. A 12-22% return band is surfaced so SpaceX appears in the outlook/tracker; refine in framework.json."
       }
     },
     {
