@@ -3,8 +3,8 @@
   "framework": "nextjs",
   "crons": [
     {
-      "path": "/api/cron/daily-monitor",
-      "schedule": "0 7 * * *"
+      "path": "/api/cron/monitor",
+      "schedule": "0 7 1 * *"
     }
   ]
 }

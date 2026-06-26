@@ -52,7 +52,7 @@ function buildPrompt(companyId: string, signals: Signal[]): string {
     )
     .join("\n");
 
-  return `You are the automated daily monitor for a long-horizon investment dashboard. Assess the following ${company?.name ?? companyId} signals against the LATEST real-world information. Use web_search to ground every judgement in current sources (prefer the last few weeks).
+  return `You are the automated monitor for a long-horizon investment dashboard. Assess the following ${company?.name ?? companyId} signals against the LATEST real-world information. Use web_search to ground every judgement in current sources (prefer the last few weeks).
 
 SIGNALS:
 ${lines}
