@@ -12,6 +12,24 @@ const SIGNAL_STATUS_KEY = "signal-status-map";
 const LOCAL_DIR = path.join(process.cwd(), ".data");
 const LOCAL_FILE = path.join(LOCAL_DIR, "kv.json");
 
+/**
+ * The @vercel/kv SDK reads KV_REST_API_URL / KV_REST_API_TOKEN. When a store is
+ * connected via the Upstash Marketplace integration, Vercel may instead inject
+ * the Upstash-native names (UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN).
+ * Alias those onto the KV_* names so the SDK works regardless of which store
+ * (or env-var prefix) was connected. Runs once at module load.
+ */
+function normalizeKvEnv(): void {
+  if (!process.env.KV_REST_API_URL && process.env.UPSTASH_REDIS_REST_URL) {
+    process.env.KV_REST_API_URL = process.env.UPSTASH_REDIS_REST_URL;
+  }
+  if (!process.env.KV_REST_API_TOKEN && process.env.UPSTASH_REDIS_REST_TOKEN) {
+    process.env.KV_REST_API_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
+  }
+}
+
+normalizeKvEnv();
+
 function useVercelKv(): boolean {
   return Boolean(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
 }
