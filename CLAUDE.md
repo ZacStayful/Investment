@@ -4,6 +4,20 @@ Investment Intelligence Dashboard. Read `CLAUDE_CODE_PROJECT_GUIDE.md` for the
 full build brief; it is the single source of truth for *what* is being built.
 This file is the short list of *rules that must never be broken*.
 
+## Governing posture (above everything)
+
+`framework.json > governingPrinciples` is the posture the whole dashboard must
+embody, and it overrides any confident, thesis-forward language elsewhere:
+(1) discipline engine, not a prediction engine — every target/CAGR is a
+contingent scenario shown bear/base/bull, never a forecast; (2) milestone
+evidence governs capital decisions, never price or narrative; (3) downside
+(exit) machinery surfaced with equal prominence to upside; (4) the concentrated
+bets carry the dream, the S&P floor + operating business carry the future — flag
+when being wrong would be damaging not just disappointing; (5) founder-led
+companies are punished before vindication — examine, never auto-flee; (6) the
+user is a person — calm tone, no hype or compulsive-checking. `principlesPreamble()`
+injects these into every AI system prompt.
+
 ## Hard rules
 
 1. **`lib/framework.json` is authoritative.** All signal definitions, thresholds,
