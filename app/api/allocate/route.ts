@@ -1,13 +1,6 @@
 import { NextResponse } from "next/server";
 import { computeAllocation } from "@/lib/allocate";
-import {
-  getCurrentBalances,
-  getHoldings,
-  setHoldings,
-  applyInvestment,
-  fetchPricesAndFx,
-  tickersOf,
-} from "@/lib/holdings";
+import { getCurrentBalances, getHoldings, setHoldings, applyInvestment } from "@/lib/holdings";
 import { applyStatuses } from "@/lib/framework";
 import { getSignalStatuses, kvGet, kvSet } from "@/lib/kv";
 import type { RiskTolerance, AllocationResult } from "@/lib/types";
@@ -68,8 +61,7 @@ export async function POST(req: Request) {
     ) as Record<string, number>;
 
     const holdings = await getHoldings();
-    const { prices, fxGbpUsd } = await fetchPricesAndFx(tickersOf(holdings));
-    const updated = applyInvestment(holdings, allocationGBP, prices, fxGbpUsd);
+    const updated = applyInvestment(holdings, allocationGBP);
     await setHoldings(updated);
 
     const contribution: Contribution = {

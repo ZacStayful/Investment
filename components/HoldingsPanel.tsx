@@ -4,40 +4,33 @@ import { useEffect, useState } from "react";
 import { formatGBP, formatPct } from "@/lib/format";
 import { notifyHoldingsChanged, onHoldingsChanged } from "@/lib/clientEvents";
 
-type Currency = "USD" | "GBP" | "GBp";
-const CURRENCIES: Currency[] = ["USD", "GBP", "GBp"];
-const CCY_SYMBOL: Record<Currency, string> = { USD: "$", GBP: "£", GBp: "p" };
-
 interface Holding {
-  ticker: string;
-  currency: Currency;
-  shares: number;
-  costBasisGBP: number;
+  investedGBP: number;
+  valueGBP: number;
 }
 
 interface PositionValue {
   position: string;
   name: string;
-  ticker: string;
-  currency: Currency;
-  shares: number;
-  costBasisGBP: number;
-  priceNative: number | null;
-  priceSource: "fmp" | "framework-fallback" | "none";
-  currentValueGBP: number | null;
-  returnGBP: number | null;
+  investedGBP: number;
+  valueGBP: number;
+  returnGBP: number;
   returnPct: number | null;
 }
 
 interface HoldingsData {
   holdings: Record<string, Holding>;
   positions: PositionValue[];
-  totals: { costBasisGBP: number; currentValueGBP: number; returnGBP: number; returnPct: number | null };
-  fxGbpUsd: number | null;
-  keyConfigured: boolean;
+  totals: { investedGBP: number; valueGBP: number; returnGBP: number; returnPct: number | null };
 }
 
 const ORDER = ["tesla", "google", "spacex", "sp500"];
+const NAMES: Record<string, string> = {
+  tesla: "Tesla",
+  google: "Google",
+  spacex: "SpaceX",
+  sp500: "S&P 500",
+};
 
 export default function HoldingsPanel() {
   const [data, setData] = useState<HoldingsData | null>(null);
@@ -50,8 +43,6 @@ export default function HoldingsPanel() {
       .then((r) => r.json())
       .then((d: HoldingsData) => {
         setData(d);
-        // Refresh edit state too, so a later Save can't clobber an allocation
-        // that was confirmed elsewhere.
         setEdit(d.holdings);
         if (showFlash) {
           setJustUpdated(true);
@@ -63,7 +54,6 @@ export default function HoldingsPanel() {
 
   useEffect(() => {
     load();
-    // Re-pull when an allocation is confirmed (or holdings change elsewhere).
     return onHoldingsChanged(() => load(true));
   }, []);
 
@@ -79,7 +69,7 @@ export default function HoldingsPanel() {
       const d = await res.json();
       setData(d);
       setEdit(d.holdings);
-      notifyHoldingsChanged(); // conviction meter + allocator balances refresh
+      notifyHoldingsChanged();
     } finally {
       setSaving(false);
     }
@@ -94,20 +84,19 @@ export default function HoldingsPanel() {
   }
 
   const t = data.totals;
-  const posByKey = Object.fromEntries(data.positions.map((p) => [p.position, p]));
 
   return (
     <div className="rounded-lg border border-terminal-border bg-terminal-panel p-4">
       {justUpdated && (
         <p className="mb-3 rounded-md border border-status-achieved/40 bg-status-achieved/10 px-3 py-2 text-xs text-status-achieved">
-          Holdings updated from a confirmed allocation — shares and amount invested adjusted at the
-          current price.
+          Holdings updated from a confirmed allocation — invested and value adjusted.
         </p>
       )}
+
       {/* Totals */}
       <div className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
-        <Stat label="Total value" value={formatGBP(t.currentValueGBP)} tone="text" />
-        <Stat label="Total invested" value={formatGBP(t.costBasisGBP)} tone="muted" />
+        <Stat label="Total value" value={formatGBP(t.valueGBP)} tone="text" />
+        <Stat label="Total invested" value={formatGBP(t.investedGBP)} tone="muted" />
         <Stat
           label="Total return"
           value={`${formatGBP(t.returnGBP)} (${formatPct(t.returnPct)})`}
@@ -115,106 +104,56 @@ export default function HoldingsPanel() {
         />
       </div>
 
-      {/* Per-position editable rows */}
+      {/* Per-position rows */}
       <div className="overflow-x-auto">
         <table className="w-full text-xs">
           <thead>
             <tr className="text-left text-terminal-muted">
               <th className="py-1 pr-2 font-medium">Position</th>
-              <th className="py-1 px-2 font-medium">Ticker / ccy</th>
-              <th className="py-1 px-2 font-medium">Shares</th>
               <th className="py-1 px-2 font-medium">Invested (£)</th>
-              <th className="py-1 px-2 font-medium">Price</th>
-              <th className="py-1 px-2 font-medium">Value</th>
+              <th className="py-1 px-2 font-medium">Current value (£)</th>
               <th className="py-1 pl-2 font-medium text-right">Return</th>
             </tr>
           </thead>
           <tbody>
             {ORDER.map((key) => {
-              const pos = posByKey[key];
               const h = edit[key];
               if (!h) return null;
+              const ret = h.valueGBP - h.investedGBP;
+              const retPct = h.investedGBP > 0 ? (h.valueGBP / h.investedGBP - 1) * 100 : null;
               return (
                 <tr key={key} className="border-t border-terminal-border">
-                  <td className="py-2 pr-2">
-                    <div className="font-semibold text-terminal-text">{pos.name}</div>
-                  </td>
-                  <td className="py-2 px-2">
-                    <div className="flex items-center gap-1">
-                      <input
-                        type="text"
-                        value={h.ticker}
-                        onChange={(e) =>
-                          setEdit({ ...edit, [key]: { ...h, ticker: e.target.value.toUpperCase() } })
-                        }
-                        className="w-20 rounded border border-terminal-border bg-terminal-bg px-2 py-1 text-terminal-text"
-                        aria-label={`${pos.name} ticker`}
-                      />
-                      <select
-                        value={h.currency}
-                        onChange={(e) =>
-                          setEdit({ ...edit, [key]: { ...h, currency: e.target.value as Currency } })
-                        }
-                        className="rounded border border-terminal-border bg-terminal-bg px-1 py-1 text-terminal-text"
-                        aria-label={`${pos.name} currency`}
-                      >
-                        {CURRENCIES.map((c) => (
-                          <option key={c} value={c}>
-                            {c}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </td>
+                  <td className="py-2 pr-2 font-semibold text-terminal-text">{NAMES[key]}</td>
                   <td className="py-2 px-2">
                     <input
                       type="number"
                       min={0}
-                      step={1}
-                      value={h.shares}
+                      step={50}
+                      value={h.investedGBP}
                       onChange={(e) =>
-                        setEdit({ ...edit, [key]: { ...h, shares: Math.max(0, Number(e.target.value) || 0) } })
+                        setEdit({ ...edit, [key]: { ...h, investedGBP: Math.max(0, Number(e.target.value) || 0) } })
                       }
-                      className="w-20 rounded border border-terminal-border bg-terminal-bg px-2 py-1 text-right text-terminal-text"
-                      aria-label={`${pos.name} shares`}
+                      className="w-28 rounded border border-terminal-border bg-terminal-bg px-2 py-1 text-right text-terminal-text"
+                      aria-label={`${NAMES[key]} amount invested`}
                     />
                   </td>
                   <td className="py-2 px-2">
                     <input
                       type="number"
                       min={0}
-                      step={100}
-                      value={h.costBasisGBP}
+                      step={50}
+                      value={h.valueGBP}
                       onChange={(e) =>
-                        setEdit({
-                          ...edit,
-                          [key]: { ...h, costBasisGBP: Math.max(0, Number(e.target.value) || 0) },
-                        })
+                        setEdit({ ...edit, [key]: { ...h, valueGBP: Math.max(0, Number(e.target.value) || 0) } })
                       }
-                      className="w-24 rounded border border-terminal-border bg-terminal-bg px-2 py-1 text-right text-terminal-text"
-                      aria-label={`${pos.name} amount invested`}
+                      className="w-28 rounded border border-terminal-border bg-terminal-bg px-2 py-1 text-right text-terminal-text"
+                      aria-label={`${NAMES[key]} current value`}
                     />
-                  </td>
-                  <td className="py-2 px-2 text-terminal-muted">
-                    {pos.priceNative != null ? (
-                      <span title={pos.priceSource}>
-                        {CCY_SYMBOL[pos.currency]}
-                        {pos.priceNative.toFixed(2)}
-                        {pos.priceSource === "framework-fallback" && (
-                          <span className="text-status-developing"> *</span>
-                        )}
-                      </span>
-                    ) : (
-                      "—"
-                    )}
-                  </td>
-                  <td className="py-2 px-2 text-terminal-text">
-                    {pos.currentValueGBP != null ? formatGBP(pos.currentValueGBP) : "—"}
                   </td>
                   <td className="py-2 pl-2 text-right">
-                    {pos.returnGBP != null ? (
-                      <span className={pos.returnGBP >= 0 ? "text-status-achieved" : "text-status-concern"}>
-                        {formatPct(pos.returnPct)}
+                    {retPct != null ? (
+                      <span className={ret >= 0 ? "text-status-achieved" : "text-status-concern"}>
+                        {formatGBP(ret)} ({formatPct(retPct)})
                       </span>
                     ) : (
                       <span className="text-terminal-muted">—</span>
@@ -235,20 +174,11 @@ export default function HoldingsPanel() {
         >
           {saving ? "Saving…" : "Save holdings"}
         </button>
-        <span className="text-[11px] text-terminal-muted">
-          {data.fxGbpUsd
-            ? `GBP/USD ${data.fxGbpUsd.toFixed(4)} · value converts USD÷FX, GBP as-is, GBp÷100`
-            : data.keyConfigured
-            ? "Price feed unavailable — values fall back to amount invested"
-            : "No price feed (set FMP_API_KEY) — values fall back to amount invested"}
-          {". * = framework fallback price (SpaceX)."}
-        </span>
       </div>
-      <p className="mt-2 text-[11px] text-terminal-muted">
-        Set the <strong>ticker + currency</strong> for each position to match what you actually hold
-        (e.g. a UK-listed S&amp;P 500 fund like <code>VUAG.L</code> in GBP, not SPY in USD), then your
-        shares and amount invested. Returns update from live prices; these live values feed the
-        allocation advisor&apos;s current weights.
+      <p className="mt-2 text-[11px] leading-relaxed text-terminal-muted">
+        Enter, per position, the total you&apos;ve invested and its current value (both read straight
+        off your broker). Return = value − invested. Confirming an allocation adds the £ to both. These
+        current values feed the allocation advisor&apos;s weights.
       </p>
     </div>
   );

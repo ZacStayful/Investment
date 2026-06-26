@@ -81,48 +81,40 @@ export default function PortfolioTracker() {
             display={`${rate}%`}
           />
 
-          {/* Adjustable monthly contribution */}
+          {/* Adjustable monthly contribution — drag the slider or type an exact amount */}
           <div>
-            <div className="mb-1.5 flex items-center justify-between text-sm">
-              <label className="text-terminal-muted" htmlFor="contribution-range">
-                Monthly contribution
-              </label>
-              <div className="flex items-center gap-1 text-terminal-text">
-                <span>£</span>
-                <input
-                  type="number"
-                  min={0}
-                  max={20000}
-                  step={50}
-                  value={contribution}
-                  onChange={(e) =>
-                    setContribution(Math.max(0, Math.min(20000, Number(e.target.value) || 0)))
-                  }
-                  className="w-20 rounded border border-terminal-border bg-terminal-bg px-2 py-0.5 text-right font-semibold"
-                  aria-label="Monthly contribution in pounds"
-                />
-                <span className="text-xs text-terminal-muted">/mo</span>
-              </div>
-            </div>
-            <input
-              id="contribution-range"
-              type="range"
+            <Slider
+              label="Monthly contribution"
+              value={Math.min(contribution, 5000)}
               min={0}
               max={5000}
               step={50}
-              value={Math.min(contribution, 5000)}
-              onChange={(e) => setContribution(Number(e.target.value))}
-              className="w-full"
-              aria-label="Monthly contribution"
+              onChange={setContribution}
+              display={`£${contribution.toLocaleString()}/mo`}
             />
-            {contribution !== defaults.C && (
-              <button
-                onClick={() => setContribution(defaults.C)}
-                className="mt-1 text-[11px] text-sky-400 underline underline-offset-2"
-              >
-                reset to £{defaults.C.toLocaleString()} baseline
-              </button>
-            )}
+            <div className="mt-1.5 flex items-center gap-2 text-xs">
+              <span className="text-terminal-muted">exact £</span>
+              <input
+                type="number"
+                min={0}
+                max={50000}
+                step={50}
+                value={contribution}
+                onChange={(e) =>
+                  setContribution(Math.max(0, Math.min(50000, Number(e.target.value) || 0)))
+                }
+                className="w-24 rounded border border-terminal-border bg-terminal-bg px-2 py-1 text-right font-semibold text-terminal-text"
+                aria-label="Monthly contribution in pounds"
+              />
+              {contribution !== defaults.C && (
+                <button
+                  onClick={() => setContribution(defaults.C)}
+                  className="text-[11px] text-sky-400 underline underline-offset-2"
+                >
+                  reset to £{defaults.C.toLocaleString()}
+                </button>
+              )}
+            </div>
           </div>
 
           <div className="pt-1">
